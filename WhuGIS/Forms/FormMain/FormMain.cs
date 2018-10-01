@@ -79,6 +79,9 @@ namespace WhuGIS.Forms.FormMain
         {
             InitializeComponent();
             presenter=new Presenter(this);
+            //赋值到全局变量
+            ApplicationV.GlobalMapControl = this.Map;
+            ApplicationV.GlobalTocControl = this.TocControl;
         }
 
         /// <summary>
@@ -191,6 +194,7 @@ namespace WhuGIS.Forms.FormMain
 
         #endregion
 
+
         #region 鹰眼操作
 
         //鹰眼同步
@@ -203,26 +207,41 @@ namespace WhuGIS.Forms.FormMain
         /// </summary>
         private void SynchronizeEagleEye()
         {
-            if (EagleEyeMapControl.LayerCount > 0)
+            try
             {
-                EagleEyeMapControl.ClearLayers();
-            }
-            //设置鹰眼和主地图的坐标系统一致
-            EagleEyeMapControl.SpatialReference = Map.SpatialReference;
-            for (int i = Map.LayerCount - 1; i >= 0; i--)
-            {
-                //使鹰眼视图与数据视图的图层上下顺序保持一致
-                ILayer pLayer = Map.get_Layer(i);
-                if (pLayer is IGroupLayer || pLayer is ICompositeLayer)
+                if (EagleEyeMapControl.LayerCount > 0)
                 {
-                    ICompositeLayer pCompositeLayer = (ICompositeLayer)pLayer;
-                    for (int j = pCompositeLayer.Count - 1; j >= 0; j--)
+                    EagleEyeMapControl.ClearLayers();
+                }
+                //设置鹰眼和主地图的坐标系统一致
+                EagleEyeMapControl.SpatialReference = Map.SpatialReference;
+                for (int i = Map.LayerCount - 1; i >= 0; i--)
+                {
+                    //使鹰眼视图与数据视图的图层上下顺序保持一致
+                    ILayer pLayer = Map.get_Layer(i);
+                    if (pLayer is IGroupLayer || pLayer is ICompositeLayer)
                     {
-                        ILayer pSubLayer = pCompositeLayer.get_Layer(j);
-                        IFeatureLayer pFeatureLayer = pSubLayer as IFeatureLayer;
+                        ICompositeLayer pCompositeLayer = (ICompositeLayer)pLayer;
+                        for (int j = pCompositeLayer.Count - 1; j >= 0; j--)
+                        {
+                            ILayer pSubLayer = pCompositeLayer.get_Layer(j);
+                            IFeatureLayer pFeatureLayer = pSubLayer as IFeatureLayer;
+                            if (pFeatureLayer != null)
+                            {
+                                //由于鹰眼地图较小，所以过滤点图层不添加
+                                if (pFeatureLayer.FeatureClass.ShapeType != esriGeometryType.esriGeometryPoint
+                                    && pFeatureLayer.FeatureClass.ShapeType != esriGeometryType.esriGeometryMultipoint)
+                                {
+                                    EagleEyeMapControl.AddLayer(pLayer);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        IFeatureLayer pFeatureLayer = pLayer as IFeatureLayer;
                         if (pFeatureLayer != null)
                         {
-                            //由于鹰眼地图较小，所以过滤点图层不添加
                             if (pFeatureLayer.FeatureClass.ShapeType != esriGeometryType.esriGeometryPoint
                                 && pFeatureLayer.FeatureClass.ShapeType != esriGeometryType.esriGeometryMultipoint)
                             {
@@ -230,25 +249,17 @@ namespace WhuGIS.Forms.FormMain
                             }
                         }
                     }
-                }
-                else
-                {
-                    IFeatureLayer pFeatureLayer = pLayer as IFeatureLayer;
-                    if (pFeatureLayer != null)
-                    {
-                        if (pFeatureLayer.FeatureClass.ShapeType != esriGeometryType.esriGeometryPoint
-                            && pFeatureLayer.FeatureClass.ShapeType != esriGeometryType.esriGeometryMultipoint)
-                        {
-                            EagleEyeMapControl.AddLayer(pLayer);
-                        }
-                    }
-                }
 
-                //设置鹰眼地图全图显示  
-                EagleEyeMapControl.Extent = Map.FullExtent;
-                pEnv = Map.Extent as IEnvelope;
-                DrawRectangle(pEnv);
-                EagleEyeMapControl.ActiveView.Refresh();
+                    //设置鹰眼地图全图显示  
+                    EagleEyeMapControl.Extent = Map.FullExtent;
+                    pEnv = Map.Extent as IEnvelope;
+                    DrawRectangle(pEnv);
+                    EagleEyeMapControl.ActiveView.Refresh();
+                }
+            }
+            catch (Exception e)
+            {
+                ShowError("鹰眼地图刷新失败\n"+e.Message);
             }
         }
 
@@ -405,6 +416,7 @@ namespace WhuGIS.Forms.FormMain
 
         #endregion
 
+
         #region TOC右键菜单的添加及功能实现
 
         private Point pMoveLayerPoint = new Point();      //鼠标在TOC中左键按下时点的位置
@@ -509,6 +521,7 @@ namespace WhuGIS.Forms.FormMain
             }
         }
 
+        //打开属性表
         private void MenuSeeAttr_Click(object sender, EventArgs e)
         {
             if (pTocFeatureLayer == null)
@@ -519,6 +532,18 @@ namespace WhuGIS.Forms.FormMain
         }
        
         #endregion
+
+
+        #region 数据分析操作
+
+        private void ToolStripMenuItem_最短路径分析_Click(object sender, EventArgs e)
+        {
+            presenter.CallOutFormPathSolve();
+        }
+
+        #endregion
+
+        
 
         
 

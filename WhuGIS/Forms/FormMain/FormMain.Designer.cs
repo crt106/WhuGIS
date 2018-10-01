@@ -51,9 +51,14 @@
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.TocContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.MenuSeeAttr = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.MenuRemoveLayer = new System.Windows.Forms.ToolStripMenuItem();
-            this.MenuSeeAttr = new System.Windows.Forms.ToolStripMenuItem();
+            this.数据分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.地图量测ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.网络分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItem_最短路径分析 = new System.Windows.Forms.ToolStripMenuItem();
+            this.directoryEntry1 = new System.DirectoryServices.DirectoryEntry();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
             ((System.ComponentModel.ISupportInitialize)(splitContainer1)).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -157,7 +162,8 @@
             // 
             this.MainMenu.Dock = System.Windows.Forms.DockStyle.None;
             this.MainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ToolStripMenuItem_File});
+            this.ToolStripMenuItem_File,
+            this.数据分析ToolStripMenuItem});
             this.MainMenu.Location = new System.Drawing.Point(0, 0);
             this.MainMenu.Name = "MainMenu";
             this.MainMenu.Size = new System.Drawing.Size(1136, 25);
@@ -222,14 +228,14 @@
             // ToolStripMenuItem_区域导出
             // 
             this.ToolStripMenuItem_区域导出.Name = "ToolStripMenuItem_区域导出";
-            this.ToolStripMenuItem_区域导出.Size = new System.Drawing.Size(152, 22);
+            this.ToolStripMenuItem_区域导出.Size = new System.Drawing.Size(133, 22);
             this.ToolStripMenuItem_区域导出.Text = "区域导出...";
             this.ToolStripMenuItem_区域导出.Click += new System.EventHandler(this.ToolStripMenuItem_区域导出_Click);
             // 
             // ToolStripMenuItem_全域导出
             // 
             this.ToolStripMenuItem_全域导出.Name = "ToolStripMenuItem_全域导出";
-            this.ToolStripMenuItem_全域导出.Size = new System.Drawing.Size(152, 22);
+            this.ToolStripMenuItem_全域导出.Size = new System.Drawing.Size(133, 22);
             this.ToolStripMenuItem_全域导出.Text = "全域导出...";
             this.ToolStripMenuItem_全域导出.Click += new System.EventHandler(this.ToolStripMenuItem_全域导出_Click);
             // 
@@ -290,6 +296,13 @@
             this.TocContextMenu.Size = new System.Drawing.Size(149, 54);
             this.TocContextMenu.Text = "右键菜单";
             // 
+            // MenuSeeAttr
+            // 
+            this.MenuSeeAttr.Name = "MenuSeeAttr";
+            this.MenuSeeAttr.Size = new System.Drawing.Size(148, 22);
+            this.MenuSeeAttr.Text = "查看项目属性";
+            this.MenuSeeAttr.Click += new System.EventHandler(this.MenuSeeAttr_Click);
+            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
@@ -301,12 +314,35 @@
             this.MenuRemoveLayer.Size = new System.Drawing.Size(148, 22);
             this.MenuRemoveLayer.Text = "移除图层";
             // 
-            // MenuSeeAttr
+            // 数据分析ToolStripMenuItem
             // 
-            this.MenuSeeAttr.Name = "MenuSeeAttr";
-            this.MenuSeeAttr.Size = new System.Drawing.Size(148, 22);
-            this.MenuSeeAttr.Text = "查看项目属性";
-            this.MenuSeeAttr.Click += new System.EventHandler(this.MenuSeeAttr_Click);
+            this.数据分析ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.地图量测ToolStripMenuItem,
+            this.网络分析ToolStripMenuItem});
+            this.数据分析ToolStripMenuItem.Name = "数据分析ToolStripMenuItem";
+            this.数据分析ToolStripMenuItem.Size = new System.Drawing.Size(68, 21);
+            this.数据分析ToolStripMenuItem.Text = "数据分析";
+            // 
+            // 地图量测ToolStripMenuItem
+            // 
+            this.地图量测ToolStripMenuItem.Name = "地图量测ToolStripMenuItem";
+            this.地图量测ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.地图量测ToolStripMenuItem.Text = "地图量测";
+            // 
+            // 网络分析ToolStripMenuItem
+            // 
+            this.网络分析ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ToolStripMenuItem_最短路径分析});
+            this.网络分析ToolStripMenuItem.Name = "网络分析ToolStripMenuItem";
+            this.网络分析ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.网络分析ToolStripMenuItem.Text = "网络分析";
+            // 
+            // ToolStripMenuItem_最短路径分析
+            // 
+            this.ToolStripMenuItem_最短路径分析.Name = "ToolStripMenuItem_最短路径分析";
+            this.ToolStripMenuItem_最短路径分析.Size = new System.Drawing.Size(157, 22);
+            this.ToolStripMenuItem_最短路径分析.Text = "最短路径分析...";
+            this.ToolStripMenuItem_最短路径分析.Click += new System.EventHandler(this.ToolStripMenuItem_最短路径分析_Click);
             // 
             // FormMain
             // 
@@ -370,6 +406,11 @@
         private System.Windows.Forms.ToolStripMenuItem MenuSeeAttr;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem MenuRemoveLayer;
+        private System.Windows.Forms.ToolStripMenuItem 数据分析ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 地图量测ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 网络分析ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_最短路径分析;
+        private System.DirectoryServices.DirectoryEntry directoryEntry1;
 
     }
 }

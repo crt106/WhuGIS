@@ -157,6 +157,12 @@ namespace WhuGIS.Forms.FormMain
             tmp.Show(FormHolder.FormHolder.GetInstance.dockPanel1, DockState.Float);
         }
 
+        public void CallOutFormPathSolve()
+        {
+            var tmp = new FormPathSolve.FormPathSolve(MainView.Map);
+            tmp.Show(FormHolder.FormHolder.GetInstance.dockPanel1, DockState.DockRight);
+        }
+
         #endregion
         
     }

@@ -35,6 +35,7 @@ namespace WhuGIS.Forms.FormAttr
             DataRow pDataRow = null; //数据表行变量
             DataColumn pDataCol = null; //数据表列变量
             IField pField = null;
+
             for (int i = 0; i < _curFeatureLayer.FeatureClass.Fields.FieldCount; i++)
             {
                 pDataCol = new DataColumn();
@@ -61,9 +62,9 @@ namespace WhuGIS.Forms.FormAttr
             //释放指针
             System.Runtime.InteropServices.Marshal.ReleaseComObject(pFeatureCursor);
 
-            //dataGridAttribute.BeginInit();
+            
             dataGridAttribute.DataSource = pFeatDT;
-            //dataGridAttribute.EndInit();
+            dataGridAttribute.Invalidate();          
         }
 
         private void FormAtrribute_Load(object sender, EventArgs e)

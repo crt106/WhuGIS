@@ -34,24 +34,32 @@
             // 
             // dataGridAttribute
             // 
+            this.dataGridAttribute.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dataGridAttribute.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.dataGridAttribute.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridAttribute.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridAttribute.Location = new System.Drawing.Point(0, 0);
+            this.dataGridAttribute.MinimumSize = new System.Drawing.Size(638, 267);
             this.dataGridAttribute.Name = "dataGridAttribute";
             this.dataGridAttribute.RowTemplate.Height = 23;
-            this.dataGridAttribute.Size = new System.Drawing.Size(456, 267);
+            this.dataGridAttribute.Size = new System.Drawing.Size(638, 267);
             this.dataGridAttribute.TabIndex = 0;
             // 
-            // FormAtrribute
+            // FormAttr
             // 
+            this.AutoHidePortion = 500D;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(456, 267);
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.ClientSize = new System.Drawing.Size(638, 267);
             this.Controls.Add(this.dataGridAttribute);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.HideOnClose = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "FormAtrribute";
+            this.MinimumSize = new System.Drawing.Size(644, 15);
+            this.Name = "FormAttr";
+            this.ShowHint = WeifenLuo.WinFormsUI.Docking.DockState.Float;
             this.ShowIcon = false;
             this.Text = "属性表";
             this.Load += new System.EventHandler(this.FormAtrribute_Load);

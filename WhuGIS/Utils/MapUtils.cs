@@ -11,7 +11,7 @@ using ESRI.ArcGIS.Output;
 
 namespace WhuGIS.Utils
 {
-    public class MapUtils
+    public static class MapUtils
     {
         /// <summary>
         /// 获取地图单位

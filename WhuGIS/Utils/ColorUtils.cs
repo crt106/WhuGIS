@@ -2,7 +2,7 @@
 
 namespace WhuGIS.Utils
 {
-    public class ColorUtils
+    public static class ColorUtils
     {
         /// <summary>
         /// 获取RGB颜色
