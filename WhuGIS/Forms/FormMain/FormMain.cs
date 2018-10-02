@@ -15,6 +15,7 @@ using WhuGIS.BaseInterface;
 using WhuGIS.Utils;
 using Point = ESRI.ArcGIS.Geometry.Point;
 
+
 namespace WhuGIS.Forms.FormMain
 {
     /// <summary>
@@ -24,7 +25,16 @@ namespace WhuGIS.Forms.FormMain
     {
         //与Presenter的连接
         private IMainPresenter presenter;
-
+        private INewLineFeedback pNewLineFeedback;           //追踪线对象
+        private INewPolygonFeedback pNewPolygonFeedback;     //追踪面对象
+        private FormMeasureResult.FormMeasureResult frmMeasureResult = null;   //量算结果窗体
+        private IPoint pPointPt = null;                      //鼠标点击点
+        private IPoint pMovePt = null;                       //鼠标移动时的当前点
+        private double dToltalLength = 0;                    //量测总长度
+        private double dSegmentLength = 0;                   //片段距离
+        private IPointCollection pAreaPointCol = new MultipointClass();  //面积量算时画的点进行存储；  
+        private string sMapUnits = "未知单位";             //地图单位变量
+        private object missing = Type.Missing;       
         #region 实现接口
 
         public Form FormInstance
@@ -32,10 +42,11 @@ namespace WhuGIS.Forms.FormMain
             get { return this; }
         } 
 
-        public AxMapControl Map {
+        public AxMapControl Map
+        {
             get { return axMapControl;}
             
-         }
+        }
 
         public AxMapControl Eagle
         {
@@ -320,6 +331,83 @@ namespace WhuGIS.Forms.FormMain
         //地图漫游
         private void axMapControl_OnMouseDown(object sender, IMapControlEvents2_OnMouseDownEvent e)
         {
+            //屏幕坐标点转化为地图坐标点
+            pPointPt = (axMapControl.Map as IActiveView).ScreenDisplay.DisplayTransformation.ToMapPoint(e.x, e.y);
+
+            if (e.button == 1)
+            {
+                IActiveView pActiveView = axMapControl.ActiveView;
+                IEnvelope pEnvelope = new EnvelopeClass();
+
+                switch (pMouseOperate)
+                {
+                    #region 距离量算
+                    case "MeasureLength":
+                        //判断追踪线对象是否为空，若是则实例化并设置当前鼠标点为起始点
+                        if (pNewLineFeedback == null)
+                        {
+                            //实例化追踪线对象
+                            pNewLineFeedback = new NewLineFeedbackClass();
+                            pNewLineFeedback.Display = (axMapControl.Map as IActiveView).ScreenDisplay;
+                            //设置起点，开始动态线绘制
+                            pNewLineFeedback.Start(pPointPt);
+                            dToltalLength = 0;
+                        }
+                        else //如果追踪线对象不为空，则添加当前鼠标点
+                        {
+                            pNewLineFeedback.AddPoint(pPointPt);
+                        }
+                        //pGeometry = m_PointPt;
+                        if (dSegmentLength != 0)
+                        {
+                            dToltalLength = dToltalLength + dSegmentLength;
+                        }
+                        break;
+                    #endregion
+
+                    #region 面积量算
+                    case "MeasureArea":
+                        if (pNewPolygonFeedback == null)
+                        {
+                            //实例化追踪面对象
+                            pNewPolygonFeedback = new NewPolygonFeedback();
+                            pNewPolygonFeedback.Display = (axMapControl.Map as IActiveView).ScreenDisplay;
+                            ;
+                            pAreaPointCol.RemovePoints(0, pAreaPointCol.PointCount);
+                            //开始绘制多边形
+                            pNewPolygonFeedback.Start(pPointPt);
+
+                            pAreaPointCol.AddPoint(pPointPt, ref missing, ref missing);
+                        }
+
+                        else
+                        {
+                            pNewPolygonFeedback.AddPoint(pPointPt);
+
+                            pAreaPointCol.AddPoint(pPointPt, ref missing, ref missing);
+                        }
+                        break;
+                    #endregion
+
+                   #region 要素选择
+                    case "SelectFeature":
+                        IPoint point = new PointClass();
+                        IGeometry pGeometry = point as IGeometry;
+                        axMapControl.Map.SelectByShape(pGeometry, null, false);
+                        axMapControl.ActiveView.PartialRefresh(esriViewDrawPhase.esriViewGeoSelection, null, null);
+                        break;
+                    #endregion
+
+                    default:
+                        break;
+                }
+            }
+            else if (e.button == 2)
+            {
+                pMouseOperate = "";
+                axMapControl.MousePointer = esriControlsMousePointer.esriPointerDefault;
+            }
+
             switch (e.button)
             {
                 case (4):
@@ -330,6 +418,80 @@ namespace WhuGIS.Forms.FormMain
             }
         }
 
+        private void axMapControl_OnMouseMove(object sender, IMapControlEvents2_OnMouseMoveEvent e)
+        {
+            sMapUnits = Utils.MapUtils.GetMapUnit(axMapControl.Map.MapUnits);
+            toolStripStatusLabel1.Text = String.Format("当前坐标：X = {0:#.###} Y = {1:#.###} {2}", e.mapX, e.mapY, sMapUnits);
+            pMovePt = (axMapControl.Map as IActiveView).ScreenDisplay.DisplayTransformation.ToMapPoint(e.x, e.y);
+
+            #region 长度量算
+            if (pMouseOperate == "MeasureLength")
+            {
+                if (pNewLineFeedback != null)
+                {
+                    pNewLineFeedback.MoveTo(pMovePt);
+                }
+                double deltaX = 0; //两点之间X差值
+                double deltaY = 0; //两点之间Y差值
+
+                if ((pPointPt != null) && (pNewLineFeedback != null))
+                {
+                    deltaX = pMovePt.X - pPointPt.X;
+                    deltaY = pMovePt.Y - pPointPt.Y;
+                    dSegmentLength = Math.Round(Math.Sqrt((deltaX * deltaX) + (deltaY * deltaY)), 3);
+                    dToltalLength = dToltalLength + dSegmentLength;
+                    if (frmMeasureResult != null)
+                    {
+                        frmMeasureResult.lblMeasureResult.Text = String.Format(
+                            "当前线段长度：{0:.###}{1};\r\n总长度为: {2:.###}{1}",
+                            dSegmentLength, sMapUnits, dToltalLength);
+                        dToltalLength = dToltalLength - dSegmentLength; //鼠标移动到新点重新开始计算
+                    }
+                    frmMeasureResult.frmClosed += new FormMeasureResult.FormMeasureResult. FormClosedEventHandler(frmMeasureResult_frmColsed);
+                }
+            }
+            #endregion
+
+            #region 面积量算
+            if (pMouseOperate == "MeasureArea")
+            {
+                if (pNewPolygonFeedback != null)
+                {
+                    pNewPolygonFeedback.MoveTo(pMovePt);
+                }
+
+                IPointCollection pPointCol = new Polygon();
+                IPolygon pPolygon = new PolygonClass();
+                IGeometry pGeo = null;
+
+                ITopologicalOperator pTopo = null;
+                for (int i = 0; i <= pAreaPointCol.PointCount - 1; i++)
+                {
+                    pPointCol.AddPoint(pAreaPointCol.get_Point(i), ref missing, ref missing);
+                }
+                pPointCol.AddPoint(pMovePt, ref missing, ref missing);
+
+                if (pPointCol.PointCount < 3) return;
+                pPolygon = pPointCol as IPolygon;
+
+                if ((pPolygon != null))
+                {
+                    pPolygon.Close();
+                    pGeo = pPolygon as IGeometry;
+                    pTopo = pGeo as ITopologicalOperator;
+                    //使几何图形的拓扑正确
+                    pTopo.Simplify();
+                    pGeo.Project(axMapControl.Map.SpatialReference);
+                    IArea pArea = pGeo as IArea;
+
+                    frmMeasureResult.lblMeasureResult.Text = String.Format(
+                        "总面积为：{0:.####}平方{1};\r\n总长度为：{2:.####}{1}",
+                        pArea.Area, sMapUnits, pPolygon.Length);
+                    pPolygon = null;
+                }
+            }
+            #endregion
+        }
         #endregion
 
 
@@ -542,6 +704,87 @@ namespace WhuGIS.Forms.FormMain
         }
 
         #endregion
+
+        #region  量测
+        //距离量测
+        private void 距离量测ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            axMapControl.CurrentTool = null;
+            pMouseOperate = "MeasureLength";
+            axMapControl.MousePointer = esriControlsMousePointer.esriPointerCrosshair;
+            if (frmMeasureResult == null || frmMeasureResult.IsDisposed)
+            {
+                frmMeasureResult = new FormMeasureResult.FormMeasureResult();
+                frmMeasureResult.frmClosed += new FormMeasureResult.FormMeasureResult. FormClosedEventHandler(  frmMeasureResult_frmColsed);
+                frmMeasureResult.lblMeasureResult.Text = "";
+                frmMeasureResult.Text = "距离量测";
+                frmMeasureResult.Show();
+            }
+            else
+            {
+                frmMeasureResult.Activate();
+            }
+        }
+        //测量结果窗口关闭响应事件
+        private void frmMeasureResult_frmColsed()
+        {
+            //清空线对象
+            if (pNewLineFeedback != null)
+            {
+                pNewLineFeedback.Stop();
+                pNewLineFeedback = null;
+            }
+            //清空面对象
+            if (pNewPolygonFeedback != null)
+            {
+                pNewPolygonFeedback.Stop();
+                pNewPolygonFeedback = null;
+                pAreaPointCol.RemovePoints(0, pAreaPointCol.PointCount); //清空点集中所有点
+            }
+            //清空量算画的线、面对象
+            axMapControl.ActiveView.PartialRefresh(esriViewDrawPhase.esriViewForeground, null, null);
+            //结束量算功能
+            pMouseOperate = string.Empty;
+            axMapControl.MousePointer = esriControlsMousePointer.esriPointerDefault;
+        }
+
+        private void 面积量测ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            axMapControl.CurrentTool = null;
+            pMouseOperate = "MeasureArea";
+            axMapControl.MousePointer = esriControlsMousePointer.esriPointerCrosshair;
+            if (frmMeasureResult == null || frmMeasureResult.IsDisposed)
+            {
+                frmMeasureResult = new FormMeasureResult.FormMeasureResult();
+                frmMeasureResult.frmClosed += new FormMeasureResult.FormMeasureResult.FormClosedEventHandler(frmMeasureResult_frmColsed);
+                frmMeasureResult.lblMeasureResult.Text = "";
+                frmMeasureResult.Text = "面积量测";
+                frmMeasureResult.Show();
+            }
+            else
+            {
+                frmMeasureResult.Activate();
+            }
+        }
+        #endregion
+
+
+
+        private void 数据分析ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void FormMain_Load(object sender, EventArgs e)
+        {
+        
+        }
+
+       
+
+        
 
         
 

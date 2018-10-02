@@ -139,6 +139,12 @@
     <Compile Include="Forms\FormMain\IMainPresenter.cs" />
     <Compile Include="Forms\FormMain\IMainView.cs" />
     <Compile Include="Forms\FormMain\Presenter.cs" />
+    <Compile Include="Forms\FormMeasureResult\FormMeasureResult.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormMeasureResult\FormMeasureResult.designer.cs">
+      <DependentUpon>FormMeasureResult.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormPathSolve\FormPathSolve.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -169,6 +175,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormMain\FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormMeasureResult\FormMeasureResult.resx">
+      <DependentUpon>FormMeasureResult.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormPathSolve\FormPathSolve.resx">
       <DependentUpon>FormPathSolve.cs</DependentUpon>
