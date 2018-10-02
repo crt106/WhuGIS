@@ -543,6 +543,17 @@ namespace WhuGIS.Forms.FormMain
 
         #endregion
 
+        #region 信息查询操作
+
+       
+        //呼出摄像头范围分析窗体
+        private void 摄像头ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            presenter.CallOutFormMonitor();
+        }
+
+        #endregion
+
         
 
         

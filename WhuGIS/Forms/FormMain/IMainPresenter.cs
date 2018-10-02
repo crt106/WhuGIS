@@ -18,5 +18,6 @@ namespace WhuGIS.Forms.FormMain
         void CallOutFormExport();                                 //呼出地图导出窗体
         void CallOutFormAttr(IFeatureLayer layer);                //呼出属性查看窗体
         void CallOutFormPathSolve();                              //呼出最短路径分析窗口
+        void CallOutFormMonitor();                                //呼出监控范围分析窗口
     } 
 }

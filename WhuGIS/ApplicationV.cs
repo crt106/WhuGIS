@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using System.Text;
+using System.Windows.Forms;
 using ESRI.ArcGIS.Controls;
 
 namespace WhuGIS
@@ -11,6 +13,16 @@ namespace WhuGIS
     /// </summary>
     public class ApplicationV
     {
+        public static string DatarootPath
+        {
+            get { return System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + "\\data"; }
+        }
+
+        public static string Data_ImgPath
+        {
+            get { return System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + "\\data\\Img"; }
+        }
+
         public static AxMapControl GlobalMapControl;
         public static AxTOCControl GlobalTocControl;
     }

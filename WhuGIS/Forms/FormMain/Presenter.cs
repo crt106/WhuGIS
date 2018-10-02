@@ -163,6 +163,12 @@ namespace WhuGIS.Forms.FormMain
             tmp.Show(FormHolder.FormHolder.GetInstance.dockPanel1, DockState.DockRight);
         }
 
+        public void CallOutFormMonitor()
+        {
+            var tmp = new FormMonitor.FormMonitor(MainView.Map);
+            tmp.Show(FormHolder.FormHolder.GetInstance.dockPanel1, DockState.DockRight);
+        }
+
         #endregion
         
     }
