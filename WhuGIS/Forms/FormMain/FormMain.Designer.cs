@@ -141,6 +141,7 @@
             this.axMapControl.TabIndex = 0;
             this.axMapControl.OnMouseDown += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnMouseDownEventHandler(this.axMapControl_OnMouseDown);
             this.axMapControl.OnMouseMove += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnMouseMoveEventHandler(this.axMapControl_OnMouseMove);
+            this.axMapControl.OnDoubleClick += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnDoubleClickEventHandler(this.axMapControl_OnDoubleClick);
             this.axMapControl.OnExtentUpdated += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnExtentUpdatedEventHandler(this.axMapControl_OnExtentUpdated);
             this.axMapControl.OnMapReplaced += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnMapReplacedEventHandler(this.axMapControl_OnMapReplaced);
             // 
@@ -258,20 +259,20 @@
             this.距离量测ToolStripMenuItem,
             this.面积量测ToolStripMenuItem});
             this.地图量测ToolStripMenuItem.Name = "地图量测ToolStripMenuItem";
-            this.地图量测ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.地图量测ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.地图量测ToolStripMenuItem.Text = "地图量测";
             // 
             // 距离量测ToolStripMenuItem
             // 
             this.距离量测ToolStripMenuItem.Name = "距离量测ToolStripMenuItem";
-            this.距离量测ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.距离量测ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.距离量测ToolStripMenuItem.Text = "距离量测";
             this.距离量测ToolStripMenuItem.Click += new System.EventHandler(this.距离量测ToolStripMenuItem_Click);
             // 
             // 面积量测ToolStripMenuItem
             // 
             this.面积量测ToolStripMenuItem.Name = "面积量测ToolStripMenuItem";
-            this.面积量测ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.面积量测ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.面积量测ToolStripMenuItem.Text = "面积量测";
             this.面积量测ToolStripMenuItem.Click += new System.EventHandler(this.面积量测ToolStripMenuItem_Click);
             // 
@@ -280,7 +281,7 @@
             this.网络分析ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripMenuItem_最短路径分析});
             this.网络分析ToolStripMenuItem.Name = "网络分析ToolStripMenuItem";
-            this.网络分析ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.网络分析ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.网络分析ToolStripMenuItem.Text = "网络分析";
             // 
             // ToolStripMenuItem_最短路径分析

@@ -492,6 +492,45 @@ namespace WhuGIS.Forms.FormMain
             }
             #endregion
         }
+
+        private void axMapControl_OnDoubleClick(object sender, IMapControlEvents2_OnDoubleClickEvent e)
+        {
+            #region 长度量算
+            if (pMouseOperate == "MeasureLength")
+            {
+                if (frmMeasureResult != null)
+                {
+                    frmMeasureResult.lblMeasureResult.Text = "线段总长度为：" + dToltalLength + sMapUnits;
+                }
+                if (pNewLineFeedback != null)
+                {
+                    pNewLineFeedback.Stop();
+                    pNewLineFeedback = null;
+                    //清空所画的线对象
+                    (axMapControl.Map as IActiveView).PartialRefresh(esriViewDrawPhase.esriViewForeground, null, null);
+                }
+                dToltalLength = 0;
+                dSegmentLength = 0;
+            }
+            #endregion
+
+            #region 面积量算
+            if (pMouseOperate == "MeasureArea")
+            {
+                if (pNewPolygonFeedback != null)
+                {
+                    pNewPolygonFeedback.Stop();
+                    pNewPolygonFeedback = null;
+                    //清空所画的线对象
+                    (axMapControl.Map as IActiveView).PartialRefresh(esriViewDrawPhase.esriViewForeground, null, null);
+                }
+                pAreaPointCol.RemovePoints(0, pAreaPointCol.PointCount); //清空点集中所有点
+            }
+            #endregion
+        }
+        
+
+
         #endregion
 
 
@@ -781,6 +820,8 @@ namespace WhuGIS.Forms.FormMain
         {
         
         }
+
+        
 
        
 
