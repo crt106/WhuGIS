@@ -51,6 +51,8 @@
             this.地图量测ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.网络分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_最短路径分析 = new System.Windows.Forms.ToolStripMenuItem();
+            this.信息查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.摄像头ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
@@ -59,8 +61,6 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.MenuRemoveLayer = new System.Windows.Forms.ToolStripMenuItem();
             this.directoryEntry1 = new System.DirectoryServices.DirectoryEntry();
-            this.信息查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.摄像头ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
             ((System.ComponentModel.ISupportInitialize)(splitContainer1)).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -204,7 +204,7 @@
             // 
             this.ToolStripMenuItem_OpenShapfile.Name = "ToolStripMenuItem_OpenShapfile";
             this.ToolStripMenuItem_OpenShapfile.Size = new System.Drawing.Size(198, 22);
-            this.ToolStripMenuItem_OpenShapfile.Text = "打开ShapeFile";
+            this.ToolStripMenuItem_OpenShapfile.Text = "添加ShapeFile...(图层)";
             this.ToolStripMenuItem_OpenShapfile.Click += new System.EventHandler(this.ToolStripMenuItem_OpenShapfile_Click);
             // 
             // toolStripMenuItem1
@@ -271,6 +271,21 @@
             this.ToolStripMenuItem_最短路径分析.Size = new System.Drawing.Size(157, 22);
             this.ToolStripMenuItem_最短路径分析.Text = "最短路径分析...";
             this.ToolStripMenuItem_最短路径分析.Click += new System.EventHandler(this.ToolStripMenuItem_最短路径分析_Click);
+            // 
+            // 信息查询ToolStripMenuItem
+            // 
+            this.信息查询ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.摄像头ToolStripMenuItem});
+            this.信息查询ToolStripMenuItem.Name = "信息查询ToolStripMenuItem";
+            this.信息查询ToolStripMenuItem.Size = new System.Drawing.Size(68, 21);
+            this.信息查询ToolStripMenuItem.Text = "信息查询";
+            // 
+            // 摄像头ToolStripMenuItem
+            // 
+            this.摄像头ToolStripMenuItem.Name = "摄像头ToolStripMenuItem";
+            this.摄像头ToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.摄像头ToolStripMenuItem.Text = "监控覆盖范围...";
+            this.摄像头ToolStripMenuItem.Click += new System.EventHandler(this.摄像头ToolStripMenuItem_Click);
             // 
             // toolStrip1
             // 
@@ -346,21 +361,6 @@
             this.MenuRemoveLayer.Name = "MenuRemoveLayer";
             this.MenuRemoveLayer.Size = new System.Drawing.Size(148, 22);
             this.MenuRemoveLayer.Text = "移除图层";
-            // 
-            // 信息查询ToolStripMenuItem
-            // 
-            this.信息查询ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.摄像头ToolStripMenuItem});
-            this.信息查询ToolStripMenuItem.Name = "信息查询ToolStripMenuItem";
-            this.信息查询ToolStripMenuItem.Size = new System.Drawing.Size(68, 21);
-            this.信息查询ToolStripMenuItem.Text = "信息查询";
-            // 
-            // 摄像头ToolStripMenuItem
-            // 
-            this.摄像头ToolStripMenuItem.Name = "摄像头ToolStripMenuItem";
-            this.摄像头ToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
-            this.摄像头ToolStripMenuItem.Text = "监控覆盖范围...";
-            this.摄像头ToolStripMenuItem.Click += new System.EventHandler(this.摄像头ToolStripMenuItem_Click);
             // 
             // FormMain
             // 

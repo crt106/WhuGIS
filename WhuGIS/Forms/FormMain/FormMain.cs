@@ -148,7 +148,7 @@ namespace WhuGIS.Forms.FormMain
             op.Multiselect = false;
             if (op.ShowDialog() == DialogResult.OK)
             {
-                ClearAllData();
+//              ClearAllData();
                 string path=System.IO.Path.GetDirectoryName(op.FileName);
                 presenter.LoadShapeFile(path,op.SafeFileName.Split('.')[0]);
             } 

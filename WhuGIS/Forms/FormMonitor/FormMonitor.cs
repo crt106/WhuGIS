@@ -11,6 +11,7 @@ using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.Controls;
 using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geometry;
+using ESRI.ArcGIS.Geoprocessor;
 using WeifenLuo.WinFormsUI.Docking;
 using Buffer = ESRI.ArcGIS.AnalysisTools.Buffer;
 
@@ -44,16 +45,25 @@ namespace WhuGIS.Forms.FormMonitor
             get
             {
                 //获取输入要素类进行缓冲之后的要素类
-                IFeatureClass featclass = (InputLayer as IFeatureLayer).FeatureClass;
-                IFeature feature = featclass.GetFeature(featclass.FeatureClassID);
-                var iGeom = feature.Shape;
-                var ipTO = (ITopologicalOperator) iGeom;
-                IGeometry iGeomBuffer = ipTO.Buffer(buffersize);
-                //创建缓冲区元素
-                IElement pEle=new CircleElementClass();
-                pEle.Geometry = iGeomBuffer;
-                
-                return null;
+                //缓冲区分析-GP工具调用
+                Geoprocessor gp = new Geoprocessor();
+                gp.OverwriteOutput = true;
+                ESRI.ArcGIS.AnalysisTools.Buffer pBuffer = new ESRI.ArcGIS.AnalysisTools.Buffer();
+                //获取缓冲区分析图层
+                IFeatureLayer featLayer = InputLayer as IFeatureLayer;
+                pBuffer.in_features = featLayer;
+                //设置生成结果存储路径
+                string filename = InputLayer.Name + "_Buffer";
+                pBuffer.out_feature_class = ApplicationV.DatarootPath + "\\" + filename + ".shp";
+                //设置缓冲区距离
+                pBuffer.buffer_distance_or_field = string.Format("{0} Meters",buffersize.ToString("f2"));
+                pBuffer.dissolve_option = "ALL";
+                //执行缓冲区分析
+                gp.Execute(pBuffer, null);
+                //添加到地图中
+                mainMapControl.AddShapeFile(ApplicationV.DatarootPath, filename);
+                //获取该图层
+                return (mainMapControl.get_Layer(0) as IFeatureLayer).FeatureClass;
             }
         }               //输入要素类
         
@@ -144,7 +154,7 @@ namespace WhuGIS.Forms.FormMonitor
 
         //开始处理
         private void buttonOK_Click(object sender, EventArgs e)
-        {
+        {     
             IFeatureClass outFeatureClass = Clip();
             if (outFeatureClass != null)
             {
@@ -172,7 +182,7 @@ namespace WhuGIS.Forms.FormMonitor
 
 
         /// <summary>
-        /// Clip裁剪分析 先并集再裁剪
+        /// Clip裁剪分析 [这里是先并集再裁剪]
         /// </summary>
         /// <returns></returns>
         public IFeatureClass Clip()
@@ -187,23 +197,75 @@ namespace WhuGIS.Forms.FormMonitor
             pOutPut.ShapeFieldName = pInputFeatureClass.ShapeFieldName;
             pOutPut.FeatureType = esriFeatureType.esriFTSimple;
 
-            //先进行Union并集运算
-            IFeatureClass pClipFeatureClass = null;
-            ITable InputTabel1=List_Clips[0] as ITable;
-            for (int i = 1; i < List_Clips.Count; i++)
-            {
-                ITable InputTabel2=List_Clips[i] as ITable;
-                pClipFeatureClass = pBasicGeo.Union(InputTabel1, false, InputTabel2, false, 0.01, pOutPut);
-                InputTabel1 = pClipFeatureClass as ITable;
-            }
-          
-            //进行裁剪运算
-            IFeatureClass pFeatureClass = pBasicGeo.Clip(pInputFeatureClass as ITable, false, pClipFeatureClass as ITable, false, 0.01, pOutPut);
+            //获取shapeFile数据工作空间
+            IWorkspaceName pWsN = new WorkspaceNameClass();
+            pWsN.WorkspaceFactoryProgID = "esriDataSourcesFile.ShapefileWorkspaceFactory";
+            pWsN.PathName = ApplicationV.DatarootPath;
+
+            //通过IDatasetName设置输出结果相关参数
+            IDatasetName pDatasetName = pOutPut as IDatasetName;
+            pDatasetName.Name = "裁剪分析结果";
+            pDatasetName.WorkspaceName = pWsN;
+
+            //先进行并集运算
+            ITable UnionTable = InnerUnion();
+            IFeatureClass pFeatureClass = pBasicGeo.Clip(UnionTable, false, pInputFeatureClass as ITable, false, 0.01, pOutPut);
             return pFeatureClass;
-            
         }
 
-        
+        /// <summary>
+        /// 下个方法用的队列组件
+        /// </summary>
+        private Queue<IFeatureClass> FeatureClassQueue;
+        /// <summary>
+        /// 上一个方法的Union组件
+        /// </summary>
+        /// <returns></returns>
+        public ITable InnerUnion()
+        {
+            //如果只有一个待并集对象 直接返回
+            if (List_Clips.Count <= 1)
+            {
+                return (List_Clips[0] as IFeatureLayer).FeatureClass as ITable;
+            }
+
+            for (int i = 1; i < List_Clips.Count; i++)
+            {
+                FeatureClassQueue.Enqueue((List_Clips[i] as IFeatureLayer).FeatureClass);
+            }
+
+            //初始化IBasicGeoprocessor对象，调用Clip方法
+            IBasicGeoprocessor pBasicGeo = new BasicGeoprocessorClass();
+            pBasicGeo.SpatialReference = mainMapControl.SpatialReference;
+
+            //设置输出结果IFeatureClassName相关必备属性
+            IFeatureClassName pOutPut = new FeatureClassNameClass();
+            pOutPut.ShapeType = pInputFeatureClass.ShapeType;
+            pOutPut.ShapeFieldName = pInputFeatureClass.ShapeFieldName;
+            pOutPut.FeatureType = esriFeatureType.esriFTSimple;
+
+            //获取shapeFile数据工作空间
+            IWorkspaceName pWsN = new WorkspaceNameClass();
+            pWsN.WorkspaceFactoryProgID = "esriDataSourcesFile.ShapefileWorkspaceFactory";
+            pWsN.PathName = ApplicationV.DatarootPath;
+
+            //通过IDatasetName设置输出结果相关参数
+            IDatasetName pDatasetName = pOutPut as IDatasetName;
+            pDatasetName.Name = "合并分析结果";
+            pDatasetName.WorkspaceName = pWsN;
+
+            //开始循环进行并集
+            while (FeatureClassQueue.Count>1)
+            {
+                IFeatureClass queue1 = FeatureClassQueue.Dequeue();
+                IFeatureClass queue2 = FeatureClassQueue.Dequeue();
+                IFeatureClass result = pBasicGeo.Union(queue1 as ITable, false, queue2 as ITable, false, 0.01, pOutPut);
+                FeatureClassQueue.Enqueue(result);
+            }
+
+            IFeatureClass FinalResult = FeatureClassQueue.Dequeue();
+            return FinalResult as ITable;
+        }
         
     }
 }
