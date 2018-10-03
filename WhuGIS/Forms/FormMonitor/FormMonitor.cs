@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -48,15 +49,15 @@ namespace WhuGIS.Forms.FormMonitor
                 //缓冲区分析-GP工具调用
                 Geoprocessor gp = new Geoprocessor();
                 gp.OverwriteOutput = true;
-                ESRI.ArcGIS.AnalysisTools.Buffer pBuffer = new ESRI.ArcGIS.AnalysisTools.Buffer();
+                Buffer pBuffer = new Buffer();
                 //获取缓冲区分析图层
                 IFeatureLayer featLayer = InputLayer as IFeatureLayer;
                 pBuffer.in_features = featLayer;
                 //设置生成结果存储路径
                 string filename = InputLayer.Name + "_Buffer";
-                pBuffer.out_feature_class = ApplicationV.DatarootPath + "\\" + filename + ".shp";
+                pBuffer.out_feature_class = ApplicationV.Data_MonitorPath + "\\" + filename + ".shp";
                 //设置缓冲区距离
-                pBuffer.buffer_distance_or_field = string.Format("{0} Meters",buffersize.ToString("f2"));
+                pBuffer.buffer_distance_or_field = string.Format("{0} Meters", buffersize.ToString("f2"));
                 pBuffer.dissolve_option = "ALL";
                 //执行缓冲区分析
                 gp.Execute(pBuffer, null);
@@ -165,6 +166,8 @@ namespace WhuGIS.Forms.FormMonitor
                 //将结果数据加载到地图中，并刷新地图控件
                 mainMapControl.AddLayer(pFeatueLayer);
                 mainMapControl.Refresh();
+                //清除数据
+                DelectDir();
             }
         }
 
@@ -200,7 +203,7 @@ namespace WhuGIS.Forms.FormMonitor
             //获取shapeFile数据工作空间
             IWorkspaceName pWsN = new WorkspaceNameClass();
             pWsN.WorkspaceFactoryProgID = "esriDataSourcesFile.ShapefileWorkspaceFactory";
-            pWsN.PathName = ApplicationV.DatarootPath;
+            pWsN.PathName = ApplicationV.Data_MonitorPath;
 
             //通过IDatasetName设置输出结果相关参数
             IDatasetName pDatasetName = pOutPut as IDatasetName;
@@ -247,7 +250,7 @@ namespace WhuGIS.Forms.FormMonitor
             //获取shapeFile数据工作空间
             IWorkspaceName pWsN = new WorkspaceNameClass();
             pWsN.WorkspaceFactoryProgID = "esriDataSourcesFile.ShapefileWorkspaceFactory";
-            pWsN.PathName = ApplicationV.DatarootPath;
+            pWsN.PathName = ApplicationV.Data_MonitorPath;
 
             //通过IDatasetName设置输出结果相关参数
             IDatasetName pDatasetName = pOutPut as IDatasetName;
@@ -265,6 +268,34 @@ namespace WhuGIS.Forms.FormMonitor
 
             IFeatureClass FinalResult = FeatureClassQueue.Dequeue();
             return FinalResult as ITable;
+        }
+
+        /// <summary>
+        /// 清空本次运算缓存
+        /// </summary>
+        public static void DelectDir()
+        {
+            try
+            {
+                DirectoryInfo dir = new DirectoryInfo(ApplicationV.Data_MonitorPath);
+                FileSystemInfo[] fileinfo = dir.GetFileSystemInfos();  //返回目录中所有文件和子目录
+                foreach (FileSystemInfo i in fileinfo)
+                {
+                    if (i is DirectoryInfo)            //判断是否文件夹
+                    {
+                        DirectoryInfo subdir = new DirectoryInfo(i.FullName);
+                        subdir.Delete(true);          //删除子目录和文件
+                    }
+                    else
+                    {
+                        File.Delete(i.FullName);      //删除指定文件
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
         }
         
     }

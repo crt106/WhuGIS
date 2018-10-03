@@ -13,14 +13,22 @@ namespace WhuGIS
     /// </summary>
     public class ApplicationV
     {
+        //数据根目录
         public static string DatarootPath
         {
             get { return System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + "\\data"; }
         }
 
+        //最短路径分析图片位置
         public static string Data_ImgPath
         {
             get { return System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + "\\data\\Img"; }
+        }
+
+        //摄像头分析缓存
+        public static string Data_MonitorPath
+        {
+            get { return System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + "\\data\\Monitor"; }
         }
 
         public static AxMapControl GlobalMapControl;

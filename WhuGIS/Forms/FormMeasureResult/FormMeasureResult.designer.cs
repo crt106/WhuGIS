@@ -58,7 +58,10 @@
             this.ClientSize = new System.Drawing.Size(292, 68);
             this.Controls.Add(this.lblMeasureResult);
             this.Controls.Add(this.lblResult);
+            this.DockAreas = ((WeifenLuo.WinFormsUI.Docking.DockAreas)(((WeifenLuo.WinFormsUI.Docking.DockAreas.Float | WeifenLuo.WinFormsUI.Docking.DockAreas.DockRight)
+                        | WeifenLuo.WinFormsUI.Docking.DockAreas.DockBottom)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.HideOnClose = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormMeasureResult";

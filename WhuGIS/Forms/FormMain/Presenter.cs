@@ -107,7 +107,7 @@ namespace WhuGIS.Forms.FormMain
                 try
                 {
                     MainView.Map.AddShapeFile(filepath, filename);
-                    MainView.Map.Extent = MainView.Map.FullExtent;
+//                    MainView.Map.Extent = MainView.Map.FullExtent;
                     MainView.SyncEagleView.Invoke();
                 }
                 catch (Exception e)
