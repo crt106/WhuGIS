@@ -147,6 +147,12 @@
     <Compile Include="Forms\FormMonitor\FormMonitor.Designer.cs">
       <DependentUpon>FormMonitor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FormMeasureResult\FormMeasureResult.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormMeasureResult\FormMeasureResult.designer.cs">
+      <DependentUpon>FormMeasureResult.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormPathSolve\FormPathSolve.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -177,9 +183,13 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormMain\FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormMonitor\FormMonitor.resx">
       <DependentUpon>FormMonitor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormMeasureResult\FormMeasureResult.resx">
+      <DependentUpon>FormMeasureResult.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormPathSolve\FormPathSolve.resx">
       <DependentUpon>FormPathSolve.cs</DependentUpon>

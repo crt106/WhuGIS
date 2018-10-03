@@ -1,8 +1,9 @@
 ﻿using System.Windows.Forms;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace  WhuGIS.Forms.FormMeasureResult
 {
-    public partial class FormMeasureResult : Form
+    public partial class FormMeasureResult : DockContent
     {
         //声明运行结果关闭事件
 

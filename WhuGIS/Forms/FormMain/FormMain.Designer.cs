@@ -49,10 +49,12 @@
             this.ToolStripMenuItem_全域导出 = new System.Windows.Forms.ToolStripMenuItem();
             this.数据分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.地图量测ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.网络分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_最短路径分析 = new System.Windows.Forms.ToolStripMenuItem();
             this.信息查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.摄像头ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.距离量测ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.面积量测ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.网络分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
@@ -140,6 +142,8 @@
             this.axMapControl.Size = new System.Drawing.Size(848, 609);
             this.axMapControl.TabIndex = 0;
             this.axMapControl.OnMouseDown += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnMouseDownEventHandler(this.axMapControl_OnMouseDown);
+            this.axMapControl.OnMouseMove += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnMouseMoveEventHandler(this.axMapControl_OnMouseMove);
+            this.axMapControl.OnDoubleClick += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnDoubleClickEventHandler(this.axMapControl_OnDoubleClick);
             this.axMapControl.OnExtentUpdated += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnExtentUpdatedEventHandler(this.axMapControl_OnExtentUpdated);
             this.axMapControl.OnMapReplaced += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnMapReplacedEventHandler(this.axMapControl_OnMapReplaced);
             // 
@@ -250,12 +254,30 @@
             this.数据分析ToolStripMenuItem.Name = "数据分析ToolStripMenuItem";
             this.数据分析ToolStripMenuItem.Size = new System.Drawing.Size(68, 21);
             this.数据分析ToolStripMenuItem.Text = "数据分析";
+            this.数据分析ToolStripMenuItem.Click += new System.EventHandler(this.数据分析ToolStripMenuItem_Click);
             // 
             // 地图量测ToolStripMenuItem
             // 
+            this.地图量测ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.距离量测ToolStripMenuItem,
+            this.面积量测ToolStripMenuItem});
             this.地图量测ToolStripMenuItem.Name = "地图量测ToolStripMenuItem";
-            this.地图量测ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.地图量测ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.地图量测ToolStripMenuItem.Text = "地图量测";
+            // 
+            // 距离量测ToolStripMenuItem
+            // 
+            this.距离量测ToolStripMenuItem.Name = "距离量测ToolStripMenuItem";
+            this.距离量测ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.距离量测ToolStripMenuItem.Text = "距离量测";
+            this.距离量测ToolStripMenuItem.Click += new System.EventHandler(this.距离量测ToolStripMenuItem_Click);
+            // 
+            // 面积量测ToolStripMenuItem
+            // 
+            this.面积量测ToolStripMenuItem.Name = "面积量测ToolStripMenuItem";
+            this.面积量测ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.面积量测ToolStripMenuItem.Text = "面积量测";
+            this.面积量测ToolStripMenuItem.Click += new System.EventHandler(this.面积量测ToolStripMenuItem_Click);
             // 
             // 网络分析ToolStripMenuItem
             // 
@@ -371,6 +393,7 @@
             this.MainMenuStrip = this.MainMenu;
             this.Name = "FormMain";
             this.Text = "校园地理信息系统";
+            this.Load += new System.EventHandler(this.FormMain_Load);
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(splitContainer1)).EndInit();
@@ -431,6 +454,8 @@
         private System.DirectoryServices.DirectoryEntry directoryEntry1;
         private System.Windows.Forms.ToolStripMenuItem 信息查询ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 摄像头ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 距离量测ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 面积量测ToolStripMenuItem;
 
     }
 }
