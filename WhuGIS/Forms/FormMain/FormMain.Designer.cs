@@ -55,6 +55,8 @@
             this.ToolStripMenuItem_最短路径分析 = new System.Windows.Forms.ToolStripMenuItem();
             this.信息查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.摄像头ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.特征地物图像查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.校园信息查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
@@ -258,7 +260,6 @@
             this.数据分析ToolStripMenuItem.Name = "数据分析ToolStripMenuItem";
             this.数据分析ToolStripMenuItem.Size = new System.Drawing.Size(68, 21);
             this.数据分析ToolStripMenuItem.Text = "数据分析";
-            this.数据分析ToolStripMenuItem.Click += new System.EventHandler(this.数据分析ToolStripMenuItem_Click);
             // 
             // 地图量测ToolStripMenuItem
             // 
@@ -266,7 +267,7 @@
             this.距离量测ToolStripMenuItem,
             this.面积量测ToolStripMenuItem});
             this.地图量测ToolStripMenuItem.Name = "地图量测ToolStripMenuItem";
-            this.地图量测ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.地图量测ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.地图量测ToolStripMenuItem.Text = "地图量测";
             // 
             // 距离量测ToolStripMenuItem
@@ -288,7 +289,7 @@
             this.网络分析ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripMenuItem_最短路径分析});
             this.网络分析ToolStripMenuItem.Name = "网络分析ToolStripMenuItem";
-            this.网络分析ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.网络分析ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.网络分析ToolStripMenuItem.Text = "网络分析";
             // 
             // ToolStripMenuItem_最短路径分析
@@ -301,7 +302,9 @@
             // 信息查询ToolStripMenuItem
             // 
             this.信息查询ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.摄像头ToolStripMenuItem});
+            this.摄像头ToolStripMenuItem,
+            this.特征地物图像查询ToolStripMenuItem,
+            this.校园信息查询ToolStripMenuItem});
             this.信息查询ToolStripMenuItem.Name = "信息查询ToolStripMenuItem";
             this.信息查询ToolStripMenuItem.Size = new System.Drawing.Size(68, 21);
             this.信息查询ToolStripMenuItem.Text = "信息查询";
@@ -309,9 +312,23 @@
             // 摄像头ToolStripMenuItem
             // 
             this.摄像头ToolStripMenuItem.Name = "摄像头ToolStripMenuItem";
-            this.摄像头ToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.摄像头ToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.摄像头ToolStripMenuItem.Text = "监控覆盖范围...";
             this.摄像头ToolStripMenuItem.Click += new System.EventHandler(this.摄像头ToolStripMenuItem_Click);
+            // 
+            // 特征地物图像查询ToolStripMenuItem
+            // 
+            this.特征地物图像查询ToolStripMenuItem.Name = "特征地物图像查询ToolStripMenuItem";
+            this.特征地物图像查询ToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.特征地物图像查询ToolStripMenuItem.Text = "特征地物图像查询";
+            this.特征地物图像查询ToolStripMenuItem.Click += new System.EventHandler(this.特征地物图像查询ToolStripMenuItem_Click);
+            // 
+            // 校园信息查询ToolStripMenuItem
+            // 
+            this.校园信息查询ToolStripMenuItem.Name = "校园信息查询ToolStripMenuItem";
+            this.校园信息查询ToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.校园信息查询ToolStripMenuItem.Text = "校园公共信息查询...";
+            this.校园信息查询ToolStripMenuItem.Click += new System.EventHandler(this.校园信息查询ToolStripMenuItem_Click);
             // 
             // toolStrip1
             // 
@@ -430,7 +447,6 @@
             this.MainMenuStrip = this.MainMenu;
             this.Name = "FormMain";
             this.Text = "校园地理信息系统";
-            this.Load += new System.EventHandler(this.FormMain_Load);
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(splitContainer1)).EndInit();
@@ -497,6 +513,8 @@
         private System.Windows.Forms.ToolStripMenuItem MenuSelFeature;
         private System.Windows.Forms.ToolStripMenuItem MenuZoomToSel;
         private System.Windows.Forms.ToolStripMenuItem MenuClearSel;
+        private System.Windows.Forms.ToolStripMenuItem 特征地物图像查询ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 校园信息查询ToolStripMenuItem;
 
     }
 }

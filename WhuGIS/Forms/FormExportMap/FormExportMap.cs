@@ -19,6 +19,7 @@ namespace WhuGIS.Forms.FormExportMap
         public IActiveView pActiveView { get; set; }
         public string pSavePath { get; set; }
         public bool bRegion { get; set; }
+
         public Form FormInstance
         {
             get { return this; }

@@ -49,7 +49,19 @@ namespace WhuGIS
             }
         }
 
+        /// <summary>
+        /// 全局地图控件
+        /// </summary>
         public static AxMapControl GlobalMapControl;
+
+        /// <summary>
+        /// 全局图层控件
+        /// </summary>
         public static AxTOCControl GlobalTocControl;
+
+        /// <summary>
+        /// 是否禁用FormMain内的窗体点击事件 为特征图像查询腾出空间
+        /// </summary>
+        public static bool IsBanFormMainMapClick = false;
     }
 }

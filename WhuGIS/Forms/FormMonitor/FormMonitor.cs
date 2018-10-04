@@ -66,14 +66,21 @@ namespace WhuGIS.Forms.FormMonitor
                 //获取该图层
                 return (mainMapControl.get_Layer(0) as IFeatureLayer).FeatureClass;
             }
-        }               //输入要素类
+        }               
         
         public FormMonitor(AxMapControl a)
         {
             InitializeComponent();
             mainMapControl = a;
             InitLayers();
-            comboBox_list.SelectedIndex = 0;
+            try
+            {
+                comboBox_list.SelectedIndex = 0;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("当前图层状态异常", "警告", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         /// <summary>

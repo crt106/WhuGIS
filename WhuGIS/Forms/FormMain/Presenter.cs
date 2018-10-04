@@ -177,6 +177,18 @@ namespace WhuGIS.Forms.FormMain
             tmp.Show(FormHolder.FormHolder.GetInstance.dockPanel1, DockState.DockRight);
         }
 
+        public void CallOutFormSchoolInfo()
+        {
+            var tmp = new FormSchoolInfo.FormSchoolInfo();
+            tmp.Show(FormHolder.FormHolder.GetInstance.dockPanel1, DockState.DockRight);
+        }
+
+        public void CallOutFormPhoto()
+        {
+            var tmp = new FormPhoto.FormPhoto(MainView.Map);
+            tmp.Show(FormHolder.FormHolder.GetInstance.dockPanel1, DockState.DockRight);
+        }
+
         #endregion
         
     }
