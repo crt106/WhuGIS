@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.DataSourcesGDB;
 using ESRI.ArcGIS.Geodatabase;
+using ESRI.ArcGIS.Geometry;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace WhuGIS.Forms.FormMain
@@ -102,21 +103,16 @@ namespace WhuGIS.Forms.FormMain
         /// <param name="filename"></param>
         public void LoadShapeFile(string filepath, string filename)
         {
-            Task t=new Task(() =>
+            try
             {
-                try
-                {
-                    MainView.Map.AddShapeFile(filepath, filename);
-//                    MainView.Map.Extent = MainView.Map.FullExtent;
-                    MainView.SyncEagleView.Invoke();
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
-            });
-            t.Start();
-            
+                MainView.Map.AddShapeFile(filepath, filename);
+                MainView.Map.Extent = MainView.Map.FullExtent;
+                MainView.SyncEagleView.Invoke();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
 
@@ -143,11 +139,23 @@ namespace WhuGIS.Forms.FormMain
 
         #region 呼出其他窗体部分
 
-        public void CallOutFormExport()
+        /// <summary>
+        /// 呼出地图导出窗体 这个方法有一定的参数
+        /// </summary>
+        /// <param name="isAllRegion">是否是全域导出</param>
+        public void CallOutFormExport(bool isAllRegion = true, IPolygon polygon = null)
         {
             var tmp=new FormExportMap.FormExportMap(MainView.Map);
-            tmp.bRegion = false;
-            tmp.pGeometry = MainView.Map.ActiveView.Extent;
+            if (isAllRegion)
+            {
+                tmp.bRegion = false;
+                tmp.pGeometry = MainView.Map.ActiveView.Extent;
+            }
+            else if (polygon != null) 
+            {
+                tmp.bRegion = true;
+                tmp.pGeometry = polygon as IGeometry;
+            }
             tmp.Show(FormHolder.FormHolder.GetInstance.dockPanel1,DockState.DockRight);
         }
 

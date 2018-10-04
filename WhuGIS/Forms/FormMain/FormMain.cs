@@ -9,7 +9,9 @@ using System.Windows.Forms;
 using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.Controls;
 using ESRI.ArcGIS.Display;
+using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geometry;
+using ESRI.ArcGIS.SystemUI;
 using WeifenLuo.WinFormsUI.Docking;
 using WhuGIS.BaseInterface;
 using WhuGIS.Utils;
@@ -319,7 +321,11 @@ namespace WhuGIS.Forms.FormMain
             DrawRectangle(pEnv);
         }
 
-        //地图漫游
+        /// <summary>
+        /// 这里的鼠标点击事件中包含了根据[当前工具条的命令]进行相应事件触发的逻辑
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void axMapControl_OnMouseDown(object sender, IMapControlEvents2_OnMouseDownEvent e)
         {
             //屏幕坐标点转化为地图坐标点
@@ -332,6 +338,19 @@ namespace WhuGIS.Forms.FormMain
 
                 switch (pMouseOperate)
                 {
+
+                    #region 区域导出
+                    case "ExportRegion":
+                        //删除视图中数据
+                        axMapControl.ActiveView.GraphicsContainer.DeleteAllElements();
+                        axMapControl.ActiveView.Refresh();
+                        IPolygon pPolygon = MapUtils.DrawPolygon(axMapControl);
+                        if (pPolygon == null) return;
+                        MapUtils.AddElement(pPolygon, axMapControl.ActiveView);
+                        presenter.CallOutFormExport(false, pPolygon);
+                        break;
+                    #endregion
+
                     #region 距离量算
                     case "MeasureLength":
                         //判断追踪线对象是否为空，若是则实例化并设置当前鼠标点为起始点
@@ -380,7 +399,7 @@ namespace WhuGIS.Forms.FormMain
                         break;
                     #endregion
 
-                   #region 要素选择
+                    #region 要素选择
                     case "SelectFeature":
                         IPoint point = new PointClass();
                         IGeometry pGeometry = point as IGeometry;
@@ -484,6 +503,11 @@ namespace WhuGIS.Forms.FormMain
             #endregion
         }
 
+        /// <summary>
+        /// 当主地图控件双击之后的事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void axMapControl_OnDoubleClick(object sender, IMapControlEvents2_OnDoubleClickEvent e)
         {
             #region 长度量算
@@ -721,6 +745,78 @@ namespace WhuGIS.Forms.FormMain
                 return;
             }
             presenter.CallOutFormAttr(pTocFeatureLayer);
+        }
+        //移除图层
+        private void MenuRemoveLayer_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (pTocFeatureLayer == null) return;
+                DialogResult result = MessageBox.Show("是否删除[" + pTocFeatureLayer.Name + "]图层", "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
+                if (result == DialogResult.OK)
+                {
+                    axMapControl.Map.DeleteLayer(pTocFeatureLayer);
+                    EagleEyeMapControl.Map.DeleteLayer(pTocFeatureLayer);
+                }
+                axMapControl.ActiveView.Refresh();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        //缩放至图层
+        private void 缩放至图层ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pTocFeatureLayer == null) return;
+            (axMapControl.Map as IActiveView).Extent = pTocFeatureLayer.AreaOfInterest;
+            (axMapControl.Map as IActiveView).PartialRefresh(esriViewDrawPhase.esriViewGeography, null, null);
+        }
+        //要素选择
+        private void 要素选择ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //bSelectFeature = true;
+            #region 调用类库资源
+            axMapControl.CurrentTool = null;
+            ControlsSelectFeaturesTool pTool = new ControlsSelectFeaturesToolClass();
+            pTool.OnCreate(axMapControl.Object);
+            axMapControl.CurrentTool = pTool as ITool;
+            #endregion
+            //pMouseOperate = "SelFeature";
+        }
+        //缩放至所选要素
+        private void MenuZoomToSel_Click(object sender, EventArgs e)
+        {
+            int nSlection = axMapControl.Map.SelectionCount;
+            if (nSlection == 0)
+            {
+                MessageBox.Show("请先选择要素！", "提示");
+            }
+            else
+            {
+                ISelection selection = axMapControl.Map.FeatureSelection;
+                IEnumFeature enumFeature = (IEnumFeature)selection;
+                enumFeature.Reset();
+                IEnvelope pEnvelope = new EnvelopeClass();
+                IFeature pFeature = enumFeature.Next();
+                while (pFeature != null)
+                {
+                    pEnvelope.Union(pFeature.Extent);
+                    pFeature = enumFeature.Next();
+                }
+                pEnvelope.Expand(1.1, 1.1, true);
+                axMapControl.ActiveView.Extent = pEnvelope;
+                axMapControl.ActiveView.Refresh();
+            }
+        }
+        //清除所选要素
+        private void MenuClearSel_Click(object sender, EventArgs e)
+        {
+
+            IActiveView pActiveView = axMapControl.ActiveView;
+            pActiveView.FocusMap.ClearSelection();
+            pActiveView.PartialRefresh(esriViewDrawPhase.esriViewGeoSelection, null, pActiveView.Extent);
+
         }
        
         #endregion

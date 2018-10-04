@@ -62,7 +62,7 @@ namespace WhuGIS.Forms.FormMonitor
                 //执行缓冲区分析
                 gp.Execute(pBuffer, null);
                 //添加到地图中
-                mainMapControl.AddShapeFile(ApplicationV.DatarootPath, filename);
+                mainMapControl.AddShapeFile(ApplicationV.Data_MonitorPath, filename);
                 //获取该图层
                 return (mainMapControl.get_Layer(0) as IFeatureLayer).FeatureClass;
             }
@@ -167,7 +167,7 @@ namespace WhuGIS.Forms.FormMonitor
                 mainMapControl.AddLayer(pFeatueLayer);
                 mainMapControl.Refresh();
                 //清除数据
-                DelectDir();
+                //DelectDir();
             }
         }
 
@@ -219,7 +219,7 @@ namespace WhuGIS.Forms.FormMonitor
         /// <summary>
         /// 下个方法用的队列组件
         /// </summary>
-        private Queue<IFeatureClass> FeatureClassQueue;
+        private Queue<IFeatureClass> FeatureClassQueue=new Queue<IFeatureClass>();
         /// <summary>
         /// 上一个方法的Union组件
         /// </summary>
@@ -294,7 +294,7 @@ namespace WhuGIS.Forms.FormMonitor
             }
             catch (Exception e)
             {
-                throw;
+                Console.WriteLine(e.Message);
             }
         }
         

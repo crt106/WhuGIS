@@ -49,12 +49,12 @@
             this.ToolStripMenuItem_全域导出 = new System.Windows.Forms.ToolStripMenuItem();
             this.数据分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.地图量测ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ToolStripMenuItem_最短路径分析 = new System.Windows.Forms.ToolStripMenuItem();
-            this.信息查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.摄像头ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.距离量测ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.面积量测ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.网络分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItem_最短路径分析 = new System.Windows.Forms.ToolStripMenuItem();
+            this.信息查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.摄像头ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
@@ -62,6 +62,10 @@
             this.MenuSeeAttr = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.MenuRemoveLayer = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuZoomToLayer = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuSelFeature = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuZoomToSel = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuClearSel = new System.Windows.Forms.ToolStripMenuItem();
             this.directoryEntry1 = new System.DirectoryServices.DirectoryEntry();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
             ((System.ComponentModel.ISupportInitialize)(splitContainer1)).BeginInit();
@@ -284,7 +288,7 @@
             this.网络分析ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripMenuItem_最短路径分析});
             this.网络分析ToolStripMenuItem.Name = "网络分析ToolStripMenuItem";
-            this.网络分析ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.网络分析ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.网络分析ToolStripMenuItem.Text = "网络分析";
             // 
             // ToolStripMenuItem_最短路径分析
@@ -361,28 +365,61 @@
             this.TocContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MenuSeeAttr,
             this.toolStripSeparator1,
-            this.MenuRemoveLayer});
+            this.MenuRemoveLayer,
+            this.MenuZoomToLayer,
+            this.MenuSelFeature,
+            this.MenuZoomToSel,
+            this.MenuClearSel});
             this.TocContextMenu.Name = "TocContextMenu";
-            this.TocContextMenu.Size = new System.Drawing.Size(149, 54);
+            this.TocContextMenu.Size = new System.Drawing.Size(161, 142);
             this.TocContextMenu.Text = "右键菜单";
             // 
             // MenuSeeAttr
             // 
             this.MenuSeeAttr.Name = "MenuSeeAttr";
-            this.MenuSeeAttr.Size = new System.Drawing.Size(148, 22);
+            this.MenuSeeAttr.Size = new System.Drawing.Size(160, 22);
             this.MenuSeeAttr.Text = "查看项目属性";
             this.MenuSeeAttr.Click += new System.EventHandler(this.MenuSeeAttr_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(145, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(157, 6);
             // 
             // MenuRemoveLayer
             // 
             this.MenuRemoveLayer.Name = "MenuRemoveLayer";
-            this.MenuRemoveLayer.Size = new System.Drawing.Size(148, 22);
+            this.MenuRemoveLayer.Size = new System.Drawing.Size(160, 22);
             this.MenuRemoveLayer.Text = "移除图层";
+            this.MenuRemoveLayer.Click += new System.EventHandler(this.MenuRemoveLayer_Click);
+            // 
+            // MenuZoomToLayer
+            // 
+            this.MenuZoomToLayer.Name = "MenuZoomToLayer";
+            this.MenuZoomToLayer.Size = new System.Drawing.Size(160, 22);
+            this.MenuZoomToLayer.Text = "缩放至图层";
+            this.MenuZoomToLayer.Click += new System.EventHandler(this.缩放至图层ToolStripMenuItem_Click);
+            // 
+            // MenuSelFeature
+            // 
+            this.MenuSelFeature.Name = "MenuSelFeature";
+            this.MenuSelFeature.Size = new System.Drawing.Size(160, 22);
+            this.MenuSelFeature.Text = "要素选择";
+            this.MenuSelFeature.Click += new System.EventHandler(this.要素选择ToolStripMenuItem_Click);
+            // 
+            // MenuZoomToSel
+            // 
+            this.MenuZoomToSel.Name = "MenuZoomToSel";
+            this.MenuZoomToSel.Size = new System.Drawing.Size(160, 22);
+            this.MenuZoomToSel.Text = "缩放至所选要素";
+            this.MenuZoomToSel.Click += new System.EventHandler(this.MenuZoomToSel_Click);
+            // 
+            // MenuClearSel
+            // 
+            this.MenuClearSel.Name = "MenuClearSel";
+            this.MenuClearSel.Size = new System.Drawing.Size(160, 22);
+            this.MenuClearSel.Text = "清除所选要素";
+            this.MenuClearSel.Click += new System.EventHandler(this.MenuClearSel_Click);
             // 
             // FormMain
             // 
@@ -456,6 +493,10 @@
         private System.Windows.Forms.ToolStripMenuItem 摄像头ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 距离量测ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 面积量测ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem MenuZoomToLayer;
+        private System.Windows.Forms.ToolStripMenuItem MenuSelFeature;
+        private System.Windows.Forms.ToolStripMenuItem MenuZoomToSel;
+        private System.Windows.Forms.ToolStripMenuItem MenuClearSel;
 
     }
 }
