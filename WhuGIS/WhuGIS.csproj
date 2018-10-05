@@ -219,8 +219,10 @@
     </Compile>
     <Compile Include="Forms\FormSchoolInfo\ISchoolPresenter.cs" />
     <Compile Include="Forms\FormSchoolInfo\ISchoolView.cs" />
+    <Compile Include="Forms\FormSchoolInfo\mobikeInfo.cs" />
     <Compile Include="Forms\FormSchoolInfo\ofoInfo.cs" />
     <Compile Include="Forms\FormSchoolInfo\Presenter.cs" />
+    <Compile Include="Forms\FormSchoolInfo\SampleData.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\ColorUtils.cs" />

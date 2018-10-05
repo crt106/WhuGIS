@@ -32,9 +32,15 @@ namespace WhuGIS.Forms.FormSchoolInfo
         {
             //获取车辆位置信息
             var ofocars=new List<ofoInfo>();
+            
             NetUtils.GetofoCars(out ofocars);
+            if (ofocars == null)
+            {
+                view.ShowError("数据出现问题,可能是ofo权限认证出错 返回示例数据");
+                ofocars = SampleData.ofoSampleList;
+            }
 
-            IFeatureClass featureclass = CreateFeatureClass();
+            IFeatureClass featureclass = CreateFeatureClass("ofo");
 
             IFeatureCursor featureCursor = featureclass.Insert(true);
 
@@ -77,11 +83,67 @@ namespace WhuGIS.Forms.FormSchoolInfo
         }
 
 
+        /// <summary>
+        /// 刷新Mobike数据
+        /// </summary>
+        public void RefreshmobikeInfo()
+        {
+            //获取车辆位置信息
+            var mobikecars = new List<mobikeInfo>();
+
+            NetUtils.GetmobikeCars(out mobikecars);
+            if (mobikecars == null)
+            {
+                view.ShowError("数据出现问题,可能是mobike用户认证出错 返回示例数据");
+                mobikecars = SampleData.mobikeSampleList;
+            }
+
+            IFeatureClass featureclass = CreateFeatureClass("mobike");
+            IFeatureCursor featureCursor = featureclass.Insert(true);
+
+            //遍历照片链表 以创建缓存的形式插入数据
+            foreach (var c in mobikecars)
+            {
+                IPoint pPoint = new PointClass();
+                //坐标转换
+                var t = CoordinateUtils.gcj02_To_Wgs84(c.distY, c.distX);
+                pPoint.PutCoords(t.longtitude, t.latitude);
+                pPoint.SpatialReference = ApplicationV.GlobalMapControl.SpatialReference;
+                pPoint.Project(ApplicationV.GlobalMapControl.SpatialReference);
+                IFeatureBuffer featureBuffer = featureclass.CreateFeatureBuffer();
+                featureBuffer.Shape = pPoint;
+                featureBuffer.set_Value(featureBuffer.Fields.FindField("Latitude"), t.latitude);
+                featureBuffer.set_Value(featureBuffer.Fields.FindField("Longtitude"), t.longtitude);
+                featureCursor.InsertFeature(featureBuffer);
+            }
+            featureCursor.Flush();
+
+            //创建图层
+            IFeatureLayer pFeaturelayer = new FeatureLayerClass();
+            pFeaturelayer.FeatureClass = featureclass;
+            pFeaturelayer.Name = "mobike分布";
+
+            //修饰该图层
+            ISimpleMarkerSymbol pMarkerSymbol = new SimpleMarkerSymbol();
+            pMarkerSymbol.Style = esriSimpleMarkerStyle.esriSMSCircle;
+            var pRgbColor = ColorUtils.GetRgbColor(226, 61, 14);
+            pMarkerSymbol.Color = pRgbColor;
+            ISimpleRenderer pSimpleRenderer = new SimpleRendererClass();
+            pSimpleRenderer.Symbol = (ISymbol)pMarkerSymbol;
+            (pFeaturelayer as IGeoFeatureLayer).Renderer = pSimpleRenderer as IFeatureRenderer;
+
+            //正式归为图层
+            ofoLayer = pFeaturelayer as ILayer;
+
+            ApplicationV.GlobalMapControl.AddLayer(ofoLayer);
+            ApplicationV.GlobalMapControl.Refresh();
+        }
+
 
         /// <summary>
-        /// 创建ofo数据FeatureClass
+        /// 创建ofo和mobike数据FeatureClass
         /// </summary>
-        private IFeatureClass CreateFeatureClass()
+        private IFeatureClass CreateFeatureClass(string name)
         {
             //创建字段集
             IFeatureClassDescription fcDescription = new FeatureClassDescriptionClass();
@@ -135,13 +197,13 @@ namespace WhuGIS.Forms.FormSchoolInfo
             //正式创建要素类
             try
             {
-                return MemoryWorkspace.CreateFeatureClass("ofo分布", pFields, ocDescription.ClassExtensionCLSID, ocDescription.ClassExtensionCLSID, esriFeatureType.esriFTSimple, fcDescription.ShapeFieldName, "");
+                return MemoryWorkspace.CreateFeatureClass(name+"分布", pFields, ocDescription.ClassExtensionCLSID, ocDescription.ClassExtensionCLSID, esriFeatureType.esriFTSimple, fcDescription.ShapeFieldName, "");
             }
             //The table already exists. 清除数据重建
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                IFeatureClass tmp = MemoryWorkspace.OpenFeatureClass("ofo分布");
+                IFeatureClass tmp = MemoryWorkspace.OpenFeatureClass(name+"分布");
                 ITable pTable = tmp as ITable;
                 pTable.DeleteSearchedRows(null);
                 return tmp;

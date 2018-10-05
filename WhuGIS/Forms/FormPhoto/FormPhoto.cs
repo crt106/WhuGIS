@@ -15,6 +15,7 @@ using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geometry;
 using WeifenLuo.WinFormsUI.Docking;
 using WhuGIS.Utils;
+using Message = System.Windows.Forms.Message;
 
 namespace WhuGIS.Forms.FormPhoto
 {
@@ -26,6 +27,10 @@ namespace WhuGIS.Forms.FormPhoto
         /// 存放接收照片的列表
         /// </summary>
         List<Photo> PhotoList=new List<Photo>();
+
+        //是否网络错误
+        private bool isnetError = false;
+       
         //当前选中照片的Osspath
         private string NowPhotoOssPath;
 
@@ -72,6 +77,13 @@ namespace WhuGIS.Forms.FormPhoto
             mainMapControl = a;
             mainMapControl.OnMouseDown += MainmapCLick_Extend;
             NetUtils.GetPhotoList(out PhotoList);
+            //如果数据错误
+            if (PhotoList == null)
+            {
+                MessageBox.Show("请检查网络连接", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                isnetError = true;
+            }
+            isnetError = false;
             //关闭主地图点击事件
             ApplicationV.IsBanFormMainMapClick = true;
 
@@ -79,10 +91,13 @@ namespace WhuGIS.Forms.FormPhoto
 
         private void FormPhoto_Load(object sender, EventArgs e)
         {
-            PhotoLayer = GetPhotosLayer();
-            mainMapControl.AddLayer(PhotoLayer);
-            mainMapControl.Refresh();
-            ApplicationV.IsBanFormMainMapClick = true;
+            if (!isnetError)
+            {
+                PhotoLayer = GetPhotosLayer();
+                mainMapControl.AddLayer(PhotoLayer);
+                mainMapControl.Refresh();
+                ApplicationV.IsBanFormMainMapClick = true;
+            }
         }
 
         /// <summary>

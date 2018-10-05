@@ -78,6 +78,7 @@ namespace WhuGIS.Forms.FormSchoolInfo
         private void buttonRefresh_Click(object sender, EventArgs e)
         {
             presenter.RefreshofoInfo();
+            presenter.RefreshmobikeInfo();
         }
 
        
