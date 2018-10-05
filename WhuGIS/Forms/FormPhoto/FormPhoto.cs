@@ -4,9 +4,6 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ESRI.ArcGIS.Carto;
@@ -61,6 +58,11 @@ namespace WhuGIS.Forms.FormPhoto
         #endregion
 
         /// <summary>
+        /// 本实例创建的图层
+        /// </summary>
+        private ILayer PhotoLayer;
+
+        /// <summary>
         /// 窗体开启时注册事件
         /// </summary>
         /// <param name="a"></param>
@@ -77,10 +79,10 @@ namespace WhuGIS.Forms.FormPhoto
 
         private void FormPhoto_Load(object sender, EventArgs e)
         {
-            ILayer photoLayer = GetPhotosLayer();
-            mainMapControl.AddLayer(photoLayer);
+            PhotoLayer = GetPhotosLayer();
+            mainMapControl.AddLayer(PhotoLayer);
             mainMapControl.Refresh();
-            ApplicationV.IsBanFormMainMapClick = false;
+            ApplicationV.IsBanFormMainMapClick = true;
         }
 
         /// <summary>
@@ -91,9 +93,16 @@ namespace WhuGIS.Forms.FormPhoto
         private void FormPhoto_FormClosing(object sender, FormClosingEventArgs e)
         {
             mainMapControl.OnMouseDown -= MainmapCLick_Extend;
-            pictureBox.Image.Dispose();
+            try
+            {
+                pictureBox.Image.Dispose();
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+            }
+            ApplicationV.IsBanFormMainMapClick = false;
         }
-
 
         ITopologicalOperator pTopo;
         IGeometry pGeometry;
@@ -103,6 +112,8 @@ namespace WhuGIS.Forms.FormPhoto
         ISpatialFilter pFilter;
         DataTable dataTable;
 
+        //这个是判断上一次选择的点
+        private IGeometry pLastGeometry;
         /// <summary>
         /// 当本窗体开启时 给主控件添加一个事件
         /// </summary>
@@ -110,20 +121,25 @@ namespace WhuGIS.Forms.FormPhoto
         {
             try
             {
-                if (e.button == 1)
+                lock (mainMapControl)
                 {
-                    Debug.WriteLine("准备选区特征地物点");
-                    mainMapControl.CurrentTool = null;
-                    for (int i = 0; i < mainMapControl.Map.LayerCount; i++)
+                    if (e.button == 1 && PhotoLayer != null)
                     {
+                        Debug.WriteLine("准备选择特征地物点");
+                        mainMapControl.CurrentTool = null;
+
                         var pPoint = new PointClass();
                         pPoint.PutCoords(e.mapX, e.mapY);
                         pTopo = pPoint as ITopologicalOperator;
-                        double m_Radius = 0.05;
+                        double m_Radius = 0.00008;
                         pGeometry = pTopo.Buffer(m_Radius);
 
                         if (pGeometry == null)
-                            continue;
+                            return;
+
+                        //判断是否重复过滤 避免报错
+                        if (pLastGeometry != null && pLastGeometry.Equals(pGeometry)) return;
+                        pLastGeometry = pGeometry;
 
                         //选中要素 第三个参数为是否只选中一个
                         mainMapControl.Map.SelectByShape(pGeometry, null, true);
@@ -132,9 +148,15 @@ namespace WhuGIS.Forms.FormPhoto
                         pFilter = new SpatialFilterClass();
                         pFilter.SpatialRel = esriSpatialRelEnum.esriSpatialRelIntersects;
                         pFilter.Geometry = pGeometry;
-                        pFeatureLayer = mainMapControl.Map.get_Layer(i) as IFeatureLayer;
+
+                        
+
+                        pFeatureLayer = PhotoLayer as IFeatureLayer;
                         pCursor = pFeatureLayer.Search(pFilter, false);
                         pFeature = pCursor.NextFeature();
+
+                        
+
 
                         //只显示点对象
                         if (pFeature != null && pFeature.Shape.GeometryType ==
@@ -195,32 +217,30 @@ namespace WhuGIS.Forms.FormPhoto
 
                             DataPointAttr.DataSource = dataTable;
                             DataPointAttr.Refresh();
+                            pFeature = null;
 
                             #endregion
                         }
-                    }
 
-                    //处理照片显示问题
-                    if(!string.IsNullOrEmpty(NowPhotoOssPath))
-                    {
-                        var task = new Task(() =>
+
+                        //处理照片显示问题
+                        if (!string.IsNullOrEmpty(NowPhotoOssPath))
                         {
-                            if(pictureBox.Image!=null)
-                                pictureBox.Image.Dispose();
-                            pictureBox.ImageLocation = NowPhotoOssPath;
-                        });
-                        task.Start();
+                            var task = new Task(() =>
+                            {
+                               pictureBox.ImageLocation = NowPhotoOssPath;
+                            });
+                            task.Start();
+                        }
                     }
-                
                 }
+                
             }
             catch (Exception exception)
             {
                 Console.WriteLine(exception);
             }
         }
-
-
 
 
         /// <summary>
@@ -291,8 +311,21 @@ namespace WhuGIS.Forms.FormPhoto
             pFieldEdit_OSSpath.Type_2 = esriFieldType.esriFieldTypeString;
             pFieldsEdit.AddField(Field_OSSpath);
 
+
             //正式创建要素类
-            return MemoryWorkspace.CreateFeatureClass("特征地物照片", pFields, ocDescription.ClassExtensionCLSID, ocDescription.ClassExtensionCLSID, esriFeatureType.esriFTSimple, fcDescription.ShapeFieldName, "");
+            try
+            {
+                return MemoryWorkspace.CreateFeatureClass("特征地物照片", pFields, ocDescription.ClassExtensionCLSID, ocDescription.ClassExtensionCLSID, esriFeatureType.esriFTSimple, fcDescription.ShapeFieldName, "");
+            }
+            //The table already exists. 清除数据重建
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                IFeatureClass tmp=MemoryWorkspace.OpenFeatureClass("特征地物照片");
+                ITable pTable = tmp as ITable;
+                pTable.DeleteSearchedRows(null);
+                return tmp;
+            }
 
         }
 
@@ -301,17 +334,20 @@ namespace WhuGIS.Forms.FormPhoto
         /// 获取最后生成的照片点图层
         /// </summary>
         /// <returns></returns>
+        
         public ILayer GetPhotosLayer()
         {
             IFeatureClass featureclass = CreateFeatureClass();
+            
             IFeatureCursor featureCursor = featureclass.Insert(true);
 
             //遍历照片链表 以创建缓存的形式插入数据
             foreach (var p in PhotoList)
             {
-
                 IPoint pPoint = new PointClass();
-                pPoint.PutCoords(p.longtitude,p.latitude);
+                //坐标转换
+                var t=CoordinateUtils.gcj02_To_Wgs84(p.latitude, p.longtitude);
+                pPoint.PutCoords(t.longtitude,t.latitude);
                 pPoint.SpatialReference = mainMapControl.SpatialReference;
                 pPoint.Project(mainMapControl.SpatialReference);
                 IFeatureBuffer featureBuffer = featureclass.CreateFeatureBuffer();
@@ -349,7 +385,46 @@ namespace WhuGIS.Forms.FormPhoto
         private void pictureBox_LoadCompleted(object sender, AsyncCompletedEventArgs e)
         {
             pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
-            if (pictureBox.Image.Width > pictureBox.Image.Height)
+            if (pictureBox.Image.Width < pictureBox.Image.Height)
+            {
+                var image = pictureBox.Image;
+                image.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                pictureBox.Image = image;
+            }
+        }
+
+        /// <summary>
+        /// pictureBox图像加载进度
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void pictureBox_LoadProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            FormMain.FormMain.FormInstance.StatusBarInfoSet(String.Format("图像加载进度{0}", e.ProgressPercentage));
+        }
+
+        /// <summary>
+        /// 逆时针旋转90度
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonleft_Click(object sender, EventArgs e)
+        {
+            if (pictureBox.Image != null) 
+            {
+                var image = pictureBox.Image;
+                image.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                pictureBox.Image = image;
+            }
+        }
+        /// <summary>
+        /// 顺时针旋转90度
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonRight_Click(object sender, EventArgs e)
+        {
+            if (pictureBox.Image != null)
             {
                 var image = pictureBox.Image;
                 image.RotateFlip(RotateFlipType.Rotate90FlipNone);

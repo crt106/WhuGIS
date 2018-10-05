@@ -31,15 +31,18 @@ namespace WhuGIS.Forms.FormMain
 
         #region 实现接口
 
-        public Form FormInstance
+        private static FormMain _Instance;
+        public static FormMain FormInstance
         {
-            get { return this; }
+            get
+            {
+                return _Instance;
+            }
         } 
 
         public AxMapControl Map
         {
             get { return axMapControl;}
-            
         }
 
         public AxMapControl Eagle
@@ -70,7 +73,7 @@ namespace WhuGIS.Forms.FormMain
         public void StatusBarInfoSet(string msg)
         {
             //线程安全的调用方法
-            statusStrip1.Invoke(new Action(() => { statusStrip1.Text = msg;}));
+            statusStrip1.Invoke(new Action(() => { toolStripStatusLabel1.Text = msg; }));
         }
 
         public Action SyncEagleView
@@ -87,6 +90,7 @@ namespace WhuGIS.Forms.FormMain
             //赋值到全局变量
             ApplicationV.GlobalMapControl = this.Map;
             ApplicationV.GlobalTocControl = this.TocControl;
+            _Instance = this;
         }
 
         /// <summary>
@@ -961,11 +965,6 @@ namespace WhuGIS.Forms.FormMain
             
         }
         #endregion
-
-        
-
-        
-
 
 
     }

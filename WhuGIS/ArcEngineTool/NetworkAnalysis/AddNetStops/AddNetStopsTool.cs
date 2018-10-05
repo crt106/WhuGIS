@@ -76,14 +76,6 @@ namespace WhuGIS.ArcEngineTool.NetworkAnalysis.AddNetStops
                 base.m_enabled = true;
 
             // TODO:  Add other initialization code
-        }
-
-        /// <summary>
-        /// Occurs when this tool is clicked
-        /// </summary>
-        public override void OnClick()
-        {
-            // TODO: Add AddNetStopsTool.OnClick implementation
             pFWorkspace = NetWorkAnalysClass.MemoryWorkspace as IFeatureWorkspace;
 
             //如果未建立FeatureClass 则创建
@@ -96,6 +88,15 @@ namespace WhuGIS.ArcEngineTool.NetworkAnalysis.AddNetStops
 
                 inputFClass = NetWorkAnalysClass.CreateFeatureClass(pFWorkspace, "Stops");
             }
+        }
+
+        /// <summary>
+        /// Occurs when this tool is clicked
+        /// </summary>
+        public override void OnClick()
+        {
+            // TODO: Add AddNetStopsTool.OnClick implementation
+            
             
             if (inputFClass.FeatureCount(null) > 0)
             {

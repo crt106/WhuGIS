@@ -21,7 +21,6 @@ namespace WhuGIS.ArcEngineTool.NetworkAnalysis.GetPathSolve
         private INetworkDataset networkDataset;
         private IFeatureClass inputFClass;
         private IFeatureClass barriesFClass;
-        string path = System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
 
         public ShortPathSolveCommand()
         {
@@ -75,6 +74,7 @@ namespace WhuGIS.ArcEngineTool.NetworkAnalysis.GetPathSolve
                 base.m_enabled = false;
             else
                 base.m_enabled = true;
+            
 
             // TODO:  Add other initialization code
         }
@@ -96,8 +96,26 @@ namespace WhuGIS.ArcEngineTool.NetworkAnalysis.GetPathSolve
             
 
             //打开要素数据集
-            inputFClass = pFWorkspace.OpenFeatureClass("Stops");
-            barriesFClass = pFWorkspace.OpenFeatureClass("Barries");
+
+            //如果这两个报异常 说明FeatureClass为空 新建
+            try
+            {
+                inputFClass = pFWorkspace.OpenFeatureClass("Stops");
+            }
+            catch (Exception e)
+            {
+                inputFClass = NetWorkAnalysClass.CreateFeatureClass(pFWorkspace, "Stops");
+            }
+
+
+            try
+            {
+                barriesFClass = pFWorkspace.OpenFeatureClass("Barries");
+            }
+            catch (Exception e)
+            {
+                barriesFClass = NetWorkAnalysClass.CreateFeatureClass(pFWorkspace, "Barries");
+            }
 
             if (IfLayerExist("NetworkDataset") == false)
             {

@@ -13,10 +13,12 @@ namespace WhuGIS.Forms.FormSchoolInfo
 {
     public partial class FormSchoolInfo : DockContent,ISchoolView
     {
+        public ISchoolPresenter presenter;
         public const string URL_GEIFEN = "120.79.7.230/whuseats_web/geifen.html";
         public FormSchoolInfo()
         {
             InitializeComponent();
+            presenter=new Presenter(this);
         }
 
         #region 接口实现
@@ -66,6 +68,16 @@ namespace WhuGIS.Forms.FormSchoolInfo
             //加载浏览器
             Cwebview = new ChromiumWebBrowser(URL_GEIFEN);
             panel_Geifen.Controls.Add(Cwebview);
+        }
+
+        /// <summary>
+        /// 刷新ofo数据
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonRefresh_Click(object sender, EventArgs e)
+        {
+            presenter.RefreshofoInfo();
         }
 
        

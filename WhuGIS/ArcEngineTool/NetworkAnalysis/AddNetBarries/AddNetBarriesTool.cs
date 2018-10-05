@@ -76,17 +76,7 @@ namespace WhuGIS.ArcEngineTool.NetworkAnalysis.AddNetBarries
                 base.m_enabled = true;
 
             // TODO:  Add other initialization code
-        }
-
-        /// <summary>
-        /// Occurs when this tool is clicked
-        /// </summary>
-        public override void OnClick()
-        {
-            // TODO: Add AddNetBarriesTool.OnClick implementation
             pFWorkspace = NetWorkAnalysClass.MemoryWorkspace as IFeatureWorkspace;
-            
-
             //如果未建立FeatureClass 则创建
             try
             {
@@ -97,6 +87,15 @@ namespace WhuGIS.ArcEngineTool.NetworkAnalysis.AddNetBarries
 
                 barriesFClass = NetWorkAnalysClass.CreateFeatureClass(pFWorkspace, "Barries");
             }
+        }
+
+        /// <summary>
+        /// Occurs when this tool is clicked
+        /// </summary>
+        public override void OnClick()
+        {
+            // TODO: Add AddNetBarriesTool.OnClick implementation
+            
 
             if (barriesFClass.FeatureCount(null) > 0)
             {

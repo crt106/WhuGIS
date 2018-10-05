@@ -27,7 +27,7 @@ namespace WhuGIS.Utils
                     sMapUnits = "厘米";
                     break;
                 case esriUnits.esriDecimalDegrees:
-                    sMapUnits = "十进制";
+                    sMapUnits = "十进制度";
                     break;
                 case esriUnits.esriDecimeters:
                     sMapUnits = "分米";
