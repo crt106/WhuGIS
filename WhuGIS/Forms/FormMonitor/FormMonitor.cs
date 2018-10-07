@@ -10,11 +10,15 @@ using System.Windows.Forms;
 using ESRI.ArcGIS.AnalysisTools;
 using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.Controls;
+using ESRI.ArcGIS.DataSourcesFile;
+using ESRI.ArcGIS.DataSourcesGDB;
 using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geometry;
+using ESRI.ArcGIS.Geoprocessing;
 using ESRI.ArcGIS.Geoprocessor;
 using WeifenLuo.WinFormsUI.Docking;
 using Buffer = ESRI.ArcGIS.AnalysisTools.Buffer;
+using Union  = ESRI.ArcGIS.AnalysisTools.Union;
 
 namespace WhuGIS.Forms.FormMonitor
 {
@@ -163,19 +167,19 @@ namespace WhuGIS.Forms.FormMonitor
         //开始处理
         private void buttonOK_Click(object sender, EventArgs e)
         {     
-            IFeatureClass outFeatureClass = Clip();
-            if (outFeatureClass != null)
-            {
-                //将结果FeatureClass数据集转为FeatureLayer
-                IFeatureLayer pFeatueLayer = new FeatureLayerClass();
-                pFeatueLayer.FeatureClass = outFeatureClass;
-                pFeatueLayer.Name = outFeatureClass.AliasName;
-                //将结果数据加载到地图中，并刷新地图控件
-                mainMapControl.AddLayer(pFeatueLayer);
-                mainMapControl.Refresh();
-                //清除数据
-                //DelectDir();
-            }
+            Clip();
+//            if (outFeatureClass != null)
+//            {
+//                //将结果FeatureClass数据集转为FeatureLayer
+//                IFeatureLayer pFeatueLayer = new FeatureLayerClass();
+//                pFeatueLayer.FeatureClass = outFeatureClass;
+//                pFeatueLayer.Name = outFeatureClass.AliasName;
+//                //将结果数据加载到地图中，并刷新地图控件
+//                mainMapControl.AddLayer(pFeatueLayer);
+//                mainMapControl.Refresh();
+//                //清除数据
+//                //DelectDir();
+//            }
         }
 
         /// <summary>
@@ -192,89 +196,106 @@ namespace WhuGIS.Forms.FormMonitor
 
 
         /// <summary>
-        /// Clip裁剪分析 [这里是先并集再裁剪]
+        /// Clip裁剪分析 [这里是先并集再裁剪]  ///突然出错 换用GP工具
         /// </summary>
         /// <returns></returns>
         public IFeatureClass Clip()
         {
-            //初始化IBasicGeoprocessor对象，调用Clip方法
-            IBasicGeoprocessor pBasicGeo = new BasicGeoprocessorClass();
-            pBasicGeo.SpatialReference = mainMapControl.SpatialReference;
+//            //初始化IBasicGeoprocessor对象，调用Clip方法
+//            IBasicGeoprocessor pBasicGeo = new BasicGeoprocessorClass();
+//            pBasicGeo.SpatialReference = mainMapControl.SpatialReference;
+//            
+//            //设置输出结果IFeatureClassName相关必备属性
+//            IFeatureClassName pOutPut = new FeatureClassNameClass();
+//            pOutPut.ShapeType = pInputFeatureClass.ShapeType;
+//            pOutPut.ShapeFieldName = pInputFeatureClass.ShapeFieldName;
+//            pOutPut.FeatureType = esriFeatureType.esriFTSimple;
+//
+//            //获取shapeFile数据工作空间
+//            IWorkspaceName pWsN = new WorkspaceNameClass();
+//            pWsN.WorkspaceFactoryProgID = "esriDataSourcesFile.ShapefileWorkspaceFactory";
+//            pWsN.PathName = ApplicationV.Data_MonitorPath;
+//
+//            //通过IDatasetName设置输出结果相关参数
+//            IDatasetName pDatasetName = pOutPut as IDatasetName;
+//            pDatasetName.Name = "裁剪分析结果";
+//            pDatasetName.WorkspaceName = pWsN;
+
+//            //先进行并集运算
+            var UnionTable = InnerUnion();
+//            IFeatureClass pFeatureClass = pBasicGeo.Clip(UnionTable, false, pInputFeatureClass as ITable, false, 0.01, pOutPut);
             
-            //设置输出结果IFeatureClassName相关必备属性
-            IFeatureClassName pOutPut = new FeatureClassNameClass();
-            pOutPut.ShapeType = pInputFeatureClass.ShapeType;
-            pOutPut.ShapeFieldName = pInputFeatureClass.ShapeFieldName;
-            pOutPut.FeatureType = esriFeatureType.esriFTSimple;
+            ///今天10-7突然这个方法报错了 换用GP工具
+            var filename = ApplicationV.Data_MonitorPath + "\\裁剪分析结果";
+            Geoprocessor g = new Geoprocessor();    //实例化一个GP对象
+            g.OverwriteOutput = true;
+            
+            ESRI.ArcGIS.AnalysisTools.Clip clip = new ESRI.ArcGIS.AnalysisTools.Clip(pInputFeatureClass, UnionTable, filename);  //创建clip裁剪工具
 
-            //获取shapeFile数据工作空间
-            IWorkspaceName pWsN = new WorkspaceNameClass();
-            pWsN.WorkspaceFactoryProgID = "esriDataSourcesFile.ShapefileWorkspaceFactory";
-            pWsN.PathName = ApplicationV.Data_MonitorPath;
-
-            //通过IDatasetName设置输出结果相关参数
-            IDatasetName pDatasetName = pOutPut as IDatasetName;
-            pDatasetName.Name = "裁剪分析结果";
-            pDatasetName.WorkspaceName = pWsN;
-
-            //先进行并集运算
-            ITable UnionTable = InnerUnion();
-            IFeatureClass pFeatureClass = pBasicGeo.Clip(UnionTable, false, pInputFeatureClass as ITable, false, 0.01, pOutPut);
-            return pFeatureClass;
+            g.Execute(clip, null);
+            //添加到地图中
+            mainMapControl.AddShapeFile(ApplicationV.Data_MonitorPath, "裁剪分析结果");
+            //获取该图层
+            return (mainMapControl.get_Layer(0) as IFeatureLayer).FeatureClass;
         }
 
         /// <summary>
         /// 下个方法用的队列组件
         /// </summary>
-        private Queue<IFeatureClass> FeatureClassQueue=new Queue<IFeatureClass>();
+        
         /// <summary>
         /// 上一个方法的Union组件
         /// </summary>
         /// <returns></returns>
-        public ITable InnerUnion()
+        public IFeatureClass InnerUnion()
         {
             //如果只有一个待并集对象 直接返回
             if (List_Clips.Count <= 1)
             {
-                return (List_Clips[0] as IFeatureLayer).FeatureClass as ITable;
+                return (List_Clips[0] as IFeatureLayer).FeatureClass;
             }
 
-            for (int i = 1; i < List_Clips.Count; i++)
+            //对多个要素类进行合并运算
+            IGpValueTableObject gpValueTableObject = new GpValueTableObjectClass();
+            gpValueTableObject.SetColumns(List_Clips.Count);
+            for (int i = 0; i < List_Clips.Count; i++)
             {
-                FeatureClassQueue.Enqueue((List_Clips[i] as IFeatureLayer).FeatureClass);
+                object o = (List_Clips[i] as IFeatureLayer).FeatureClass;
+                gpValueTableObject.AddRow(ref o);
             }
 
-            //初始化IBasicGeoprocessor对象，调用Clip方法
-            IBasicGeoprocessor pBasicGeo = new BasicGeoprocessorClass();
-            pBasicGeo.SpatialReference = mainMapControl.SpatialReference;
+//            //初始化IBasicGeoprocessor对象，调用Clip方法
+//            IBasicGeoprocessor pBasicGeo = new BasicGeoprocessorClass();
+//            pBasicGeo.SpatialReference = mainMapControl.SpatialReference;
+//
+//            //设置输出结果IFeatureClassName相关必备属性
+//            IFeatureClassName pOutPut = new FeatureClassNameClass();
+//            pOutPut.ShapeType = pInputFeatureClass.ShapeType;
+//            pOutPut.ShapeFieldName = pInputFeatureClass.ShapeFieldName;
+//            pOutPut.FeatureType = esriFeatureType.esriFTSimple;
+//
+//            //获取shapeFile数据工作空间
+//            IWorkspaceName pWsN = new WorkspaceNameClass();
+//            pWsN.WorkspaceFactoryProgID = "esriDataSourcesFile.ShapefileWorkspaceFactory";
+//            pWsN.PathName = ApplicationV.Data_MonitorPath;
+//
+//            //通过IDatasetName设置输出结果相关参数
+//            IDatasetName pDatasetName = pOutPut as IDatasetName;
+//            pDatasetName.Name = "合并分析结果";
+//            pDatasetName.WorkspaceName = pWsN;
 
-            //设置输出结果IFeatureClassName相关必备属性
-            IFeatureClassName pOutPut = new FeatureClassNameClass();
-            pOutPut.ShapeType = pInputFeatureClass.ShapeType;
-            pOutPut.ShapeFieldName = pInputFeatureClass.ShapeFieldName;
-            pOutPut.FeatureType = esriFeatureType.esriFTSimple;
 
-            //获取shapeFile数据工作空间
-            IWorkspaceName pWsN = new WorkspaceNameClass();
-            pWsN.WorkspaceFactoryProgID = "esriDataSourcesFile.ShapefileWorkspaceFactory";
-            pWsN.PathName = ApplicationV.Data_MonitorPath;
+            var filename = ApplicationV.Data_MonitorPath + "\\合并分析结果";
+            Geoprocessor g = new Geoprocessor(); //实例化一个GP对象
+            g.OverwriteOutput = true;
 
-            //通过IDatasetName设置输出结果相关参数
-            IDatasetName pDatasetName = pOutPut as IDatasetName;
-            pDatasetName.Name = "合并分析结果";
-            pDatasetName.WorkspaceName = pWsN;
+            Union clip = new Union(gpValueTableObject, filename); //创建clip裁剪工具
+            g.Execute(clip, null);
 
-            //开始循环进行并集
-            while (FeatureClassQueue.Count>1)
-            {
-                IFeatureClass queue1 = FeatureClassQueue.Dequeue();
-                IFeatureClass queue2 = FeatureClassQueue.Dequeue();
-                IFeatureClass result = pBasicGeo.Union(queue1 as ITable, false, queue2 as ITable, false, 0.01, pOutPut);
-                FeatureClassQueue.Enqueue(result);
-            }
-
-            IFeatureClass FinalResult = FeatureClassQueue.Dequeue();
-            return FinalResult as ITable;
+            var workspaceFactory = new ShapefileWorkspaceFactory();
+            var workspace = workspaceFactory.OpenFromFile(ApplicationV.Data_MonitorPath, 0);
+            var result = (workspace as IFeatureWorkspace).OpenFeatureClass("合并分析结果");
+            return result;
         }
 
         /// <summary>

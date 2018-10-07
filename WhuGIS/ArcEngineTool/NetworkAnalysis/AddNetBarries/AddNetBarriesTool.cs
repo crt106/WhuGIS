@@ -138,7 +138,8 @@ namespace WhuGIS.ArcEngineTool.NetworkAnalysis.AddNetBarries
                 pms.BitmapTransparencyColor = pColor;
 
                 //添加自定义障碍点图片
-                pms.CreateMarkerSymbolFromFile(esriIPictureType.esriIPictureBitmap, path + "\\data\\Img\\barries.bmp");
+                pms.CreateMarkerSymbolFromFile(esriIPictureType.esriIPictureBitmap, ApplicationV.Data_ImgPath+"\\barries.bmp");
+                
                 pms.Size = 18;
                 IMarkerElement pMarkerEle = new MarkerElementClass();
                 pMarkerEle.Symbol = pms as IMarkerSymbol;

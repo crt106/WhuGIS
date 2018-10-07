@@ -15,6 +15,7 @@ namespace WhuGIS.Utils
 {
     public static class NetUtils
     {
+
         /// <summary>
         /// 从服务器获取图片数据 顺便直接返回图片链表
         /// </summary>

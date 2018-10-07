@@ -32,6 +32,10 @@ namespace WhuGIS
             get { return System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + "\\data\\Monitor"; }
         }
 
+
+        public static string SampleMXD =
+            AppDomain.CurrentDomain.SetupInformation.ApplicationBase + "\\data\\地图数据\\初步完整版.mxd";
+
         static ApplicationV()
         {
             //检查各个路径是否创建

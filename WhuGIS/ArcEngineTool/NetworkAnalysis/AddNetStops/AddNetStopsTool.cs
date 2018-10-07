@@ -141,7 +141,9 @@ namespace WhuGIS.ArcEngineTool.NetworkAnalysis.AddNetStops
                 pColor = pRgbColor as IColor;
                 IPictureMarkerSymbol pms = new PictureMarkerSymbolClass();
                 pms.BitmapTransparencyColor = pColor;
-                string picturePath = path + "\\data\\Img\\stops.bmp";
+
+                string picturePath = ApplicationV.Data_ImgPath + "\\stops.bmp";
+
                 //添加自定义站点图片
                 pms.CreateMarkerSymbolFromFile(esriIPictureType.esriIPictureBitmap, picturePath);
                 pms.Size = 18;

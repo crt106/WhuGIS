@@ -198,6 +198,7 @@ namespace WhuGIS.ArcEngineTool.NetworkAnalysis.GetPathSolve
             m_hookHelper.ActiveView.Refresh();
         }
 
+
         private bool IfLayerExist(string layerName)
         {
             for (int i = 0; i < m_hookHelper.FocusMap.LayerCount; i++)

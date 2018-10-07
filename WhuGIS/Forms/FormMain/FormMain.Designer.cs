@@ -29,8 +29,12 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             System.Windows.Forms.SplitContainer splitContainer1;
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
+            this.axTOCControl = new ESRI.ArcGIS.Controls.AxTOCControl();
+            this.EagleEyeMapControl = new ESRI.ArcGIS.Controls.AxMapControl();
+            this.axLicenseControl = new ESRI.ArcGIS.Controls.AxLicenseControl();
+            this.axMapControl = new ESRI.ArcGIS.Controls.AxMapControl();
             this.TocContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.MenuSeeAttr = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -69,30 +73,90 @@
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.ContentPanel = new System.Windows.Forms.ToolStripContentPanel();
-            this.EagleEyeMapControl = new ESRI.ArcGIS.Controls.AxMapControl();
-            this.axLicenseControl = new ESRI.ArcGIS.Controls.AxLicenseControl();
-            this.axMapControl = new ESRI.ArcGIS.Controls.AxMapControl();
-            this.axTOCControl = new ESRI.ArcGIS.Controls.AxTOCControl();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.TocContextMenu.SuspendLayout();
-            this.statusStrip1.SuspendLayout();
-            this.MainMenu.SuspendLayout();
-            this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(splitContainer1)).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.axTOCControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.EagleEyeMapControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.axLicenseControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.axMapControl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.axTOCControl)).BeginInit();
+            this.TocContextMenu.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
+            this.MainMenu.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.LeftToolStripPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // splitContainer1
+            // 
+            splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            splitContainer1.Location = new System.Drawing.Point(0, 0);
+            splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            splitContainer1.Panel1.Controls.Add(this.axTOCControl);
+            // 
+            // splitContainer1.Panel2
+            // 
+            splitContainer1.Panel2.Controls.Add(this.EagleEyeMapControl);
+            splitContainer1.Panel2.Controls.Add(this.axLicenseControl);
+            splitContainer1.Panel2.Controls.Add(this.axMapControl);
+            splitContainer1.Size = new System.Drawing.Size(1112, 609);
+            splitContainer1.SplitterDistance = 180;
+            splitContainer1.TabIndex = 2;
+            // 
+            // axTOCControl
+            // 
+            this.axTOCControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.axTOCControl.Location = new System.Drawing.Point(0, 0);
+            this.axTOCControl.Name = "axTOCControl";
+            this.axTOCControl.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axTOCControl.OcxState")));
+            this.axTOCControl.Size = new System.Drawing.Size(180, 609);
+            this.axTOCControl.TabIndex = 1;
+            this.axTOCControl.OnMouseDown += new ESRI.ArcGIS.Controls.ITOCControlEvents_Ax_OnMouseDownEventHandler(this.axTOCControl_OnMouseDown);
+            this.axTOCControl.OnMouseUp += new ESRI.ArcGIS.Controls.ITOCControlEvents_Ax_OnMouseUpEventHandler(this.axTOCControl_OnMouseUp);
+            // 
+            // EagleEyeMapControl
+            // 
+            this.EagleEyeMapControl.Location = new System.Drawing.Point(0, 396);
+            this.EagleEyeMapControl.Name = "EagleEyeMapControl";
+            this.EagleEyeMapControl.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("EagleEyeMapControl.OcxState")));
+            this.EagleEyeMapControl.Size = new System.Drawing.Size(275, 213);
+            this.EagleEyeMapControl.TabIndex = 4;
+            this.EagleEyeMapControl.OnMouseDown += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnMouseDownEventHandler(this.EagleEyeMapControl_OnMouseDown);
+            this.EagleEyeMapControl.OnMouseUp += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnMouseUpEventHandler(this.EagleEyeMapControl_OnMouseUp);
+            this.EagleEyeMapControl.OnMouseMove += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnMouseMoveEventHandler(this.EagleEyeMapControl_OnMouseMove);
+            // 
+            // axLicenseControl
+            // 
+            this.axLicenseControl.Enabled = true;
+            this.axLicenseControl.Location = new System.Drawing.Point(813, -13);
+            this.axLicenseControl.Name = "axLicenseControl";
+            this.axLicenseControl.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axLicenseControl.OcxState")));
+            this.axLicenseControl.Size = new System.Drawing.Size(32, 32);
+            this.axLicenseControl.TabIndex = 3;
+            // 
+            // axMapControl
+            // 
+            this.axMapControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.axMapControl.Location = new System.Drawing.Point(0, 0);
+            this.axMapControl.Name = "axMapControl";
+            this.axMapControl.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axMapControl.OcxState")));
+            this.axMapControl.Size = new System.Drawing.Size(928, 609);
+            this.axMapControl.TabIndex = 0;
+            this.axMapControl.OnMouseDown += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnMouseDownEventHandler(this.axMapControl_OnMouseDown);
+            this.axMapControl.OnMouseMove += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnMouseMoveEventHandler(this.axMapControl_OnMouseMove);
+            this.axMapControl.OnDoubleClick += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnDoubleClickEventHandler(this.axMapControl_OnDoubleClick);
+            this.axMapControl.OnExtentUpdated += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnExtentUpdatedEventHandler(this.axMapControl_OnExtentUpdated);
+            this.axMapControl.OnMapReplaced += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnMapReplacedEventHandler(this.axMapControl_OnMapReplaced);
             // 
             // TocContextMenu
             // 
@@ -285,20 +349,20 @@
             this.距离量测ToolStripMenuItem,
             this.面积量测ToolStripMenuItem});
             this.地图量测ToolStripMenuItem.Name = "地图量测ToolStripMenuItem";
-            this.地图量测ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.地图量测ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.地图量测ToolStripMenuItem.Text = "地图量测";
             // 
             // 距离量测ToolStripMenuItem
             // 
             this.距离量测ToolStripMenuItem.Name = "距离量测ToolStripMenuItem";
-            this.距离量测ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.距离量测ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.距离量测ToolStripMenuItem.Text = "距离量测";
             this.距离量测ToolStripMenuItem.Click += new System.EventHandler(this.距离量测ToolStripMenuItem_Click);
             // 
             // 面积量测ToolStripMenuItem
             // 
             this.面积量测ToolStripMenuItem.Name = "面积量测ToolStripMenuItem";
-            this.面积量测ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.面积量测ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.面积量测ToolStripMenuItem.Text = "面积量测";
             this.面积量测ToolStripMenuItem.Click += new System.EventHandler(this.面积量测ToolStripMenuItem_Click);
             // 
@@ -307,7 +371,7 @@
             this.网络分析ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripMenuItem_最短路径分析});
             this.网络分析ToolStripMenuItem.Name = "网络分析ToolStripMenuItem";
-            this.网络分析ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.网络分析ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.网络分析ToolStripMenuItem.Text = "网络分析";
             // 
             // ToolStripMenuItem_最短路径分析
@@ -389,70 +453,6 @@
             this.ContentPanel.AutoScroll = true;
             this.ContentPanel.Size = new System.Drawing.Size(1112, 609);
             // 
-            // splitContainer1
-            // 
-            splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            splitContainer1.Location = new System.Drawing.Point(0, 0);
-            splitContainer1.Name = "splitContainer1";
-            // 
-            // splitContainer1.Panel1
-            // 
-            splitContainer1.Panel1.Controls.Add(this.axTOCControl);
-            // 
-            // splitContainer1.Panel2
-            // 
-            splitContainer1.Panel2.Controls.Add(this.EagleEyeMapControl);
-            splitContainer1.Panel2.Controls.Add(this.axLicenseControl);
-            splitContainer1.Panel2.Controls.Add(this.axMapControl);
-            splitContainer1.Size = new System.Drawing.Size(1112, 609);
-            splitContainer1.SplitterDistance = 260;
-            splitContainer1.TabIndex = 2;
-            // 
-            // EagleEyeMapControl
-            // 
-            this.EagleEyeMapControl.Location = new System.Drawing.Point(0, 396);
-            this.EagleEyeMapControl.Name = "EagleEyeMapControl";
-            this.EagleEyeMapControl.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("EagleEyeMapControl.OcxState")));
-            this.EagleEyeMapControl.Size = new System.Drawing.Size(275, 213);
-            this.EagleEyeMapControl.TabIndex = 4;
-            this.EagleEyeMapControl.OnMouseDown += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnMouseDownEventHandler(this.EagleEyeMapControl_OnMouseDown);
-            this.EagleEyeMapControl.OnMouseUp += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnMouseUpEventHandler(this.EagleEyeMapControl_OnMouseUp);
-            this.EagleEyeMapControl.OnMouseMove += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnMouseMoveEventHandler(this.EagleEyeMapControl_OnMouseMove);
-            // 
-            // axLicenseControl
-            // 
-            this.axLicenseControl.Enabled = true;
-            this.axLicenseControl.Location = new System.Drawing.Point(813, -13);
-            this.axLicenseControl.Name = "axLicenseControl";
-            this.axLicenseControl.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axLicenseControl.OcxState")));
-            this.axLicenseControl.Size = new System.Drawing.Size(32, 32);
-            this.axLicenseControl.TabIndex = 3;
-            // 
-            // axMapControl
-            // 
-            this.axMapControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.axMapControl.Location = new System.Drawing.Point(0, 0);
-            this.axMapControl.Name = "axMapControl";
-            this.axMapControl.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axMapControl.OcxState")));
-            this.axMapControl.Size = new System.Drawing.Size(848, 609);
-            this.axMapControl.TabIndex = 0;
-            this.axMapControl.OnMouseDown += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnMouseDownEventHandler(this.axMapControl_OnMouseDown);
-            this.axMapControl.OnMouseMove += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnMouseMoveEventHandler(this.axMapControl_OnMouseMove);
-            this.axMapControl.OnDoubleClick += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnDoubleClickEventHandler(this.axMapControl_OnDoubleClick);
-            this.axMapControl.OnExtentUpdated += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnExtentUpdatedEventHandler(this.axMapControl_OnExtentUpdated);
-            this.axMapControl.OnMapReplaced += new ESRI.ArcGIS.Controls.IMapControlEvents2_Ax_OnMapReplacedEventHandler(this.axMapControl_OnMapReplaced);
-            // 
-            // axTOCControl
-            // 
-            this.axTOCControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.axTOCControl.Location = new System.Drawing.Point(0, 0);
-            this.axTOCControl.Name = "axTOCControl";
-            this.axTOCControl.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axTOCControl.OcxState")));
-            this.axTOCControl.Size = new System.Drawing.Size(260, 609);
-            this.axTOCControl.TabIndex = 1;
-            this.axTOCControl.OnMouseDown += new ESRI.ArcGIS.Controls.ITOCControlEvents_Ax_OnMouseDownEventHandler(this.axTOCControl_OnMouseDown);
-            this.axTOCControl.OnMouseUp += new ESRI.ArcGIS.Controls.ITOCControlEvents_Ax_OnMouseUpEventHandler(this.axTOCControl_OnMouseUp);
-            // 
             // toolStripContainer1
             // 
             // 
@@ -489,6 +489,15 @@
             this.MainMenuStrip = this.MainMenu;
             this.Name = "FormMain";
             this.Text = "校园地理信息系统";
+            this.Load += new System.EventHandler(this.FormMain_Load);
+            splitContainer1.Panel1.ResumeLayout(false);
+            splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(splitContainer1)).EndInit();
+            splitContainer1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.axTOCControl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.EagleEyeMapControl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.axLicenseControl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.axMapControl)).EndInit();
             this.TocContextMenu.ResumeLayout(false);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
@@ -496,14 +505,6 @@
             this.MainMenu.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
-            splitContainer1.Panel1.ResumeLayout(false);
-            splitContainer1.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(splitContainer1)).EndInit();
-            splitContainer1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.EagleEyeMapControl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.axLicenseControl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.axMapControl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.axTOCControl)).EndInit();
             this.toolStripContainer1.BottomToolStripPanel.ResumeLayout(false);
             this.toolStripContainer1.BottomToolStripPanel.PerformLayout();
             this.toolStripContainer1.ContentPanel.ResumeLayout(false);

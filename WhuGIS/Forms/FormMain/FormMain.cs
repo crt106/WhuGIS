@@ -966,6 +966,16 @@ namespace WhuGIS.Forms.FormMain
         }
         #endregion
 
+        /// <summary>
+        /// 加载窗体时加载默认地图
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FormMain_Load(object sender, EventArgs e)
+        {
+            presenter.LoadMxdFile(ApplicationV.SampleMXD);
+        }
+
 
     }
 }

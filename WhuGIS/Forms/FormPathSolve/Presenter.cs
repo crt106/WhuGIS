@@ -22,7 +22,6 @@ namespace WhuGIS.Forms.FormPathSolve
         {
             this.View = view;
         }
-
         public void SetNetWorkDataset_GDBFolder()
         {
             View.SetNetWorkDataStatusText(false);

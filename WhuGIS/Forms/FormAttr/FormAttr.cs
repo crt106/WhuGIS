@@ -14,8 +14,6 @@ namespace WhuGIS.Forms.FormAttr
             CurFeatureLayer = layer;
             
         }
-
-
         //要查询的属性图层
         private IFeatureLayer _curFeatureLayer;
 
@@ -69,7 +67,14 @@ namespace WhuGIS.Forms.FormAttr
 
         private void FormAtrribute_Load(object sender, EventArgs e)
         {
-            InitUI();
+            try
+            {
+                InitUI();
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+            }
         }
     }
 }

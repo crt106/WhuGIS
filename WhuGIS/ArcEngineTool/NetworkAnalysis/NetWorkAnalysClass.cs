@@ -21,10 +21,7 @@ namespace WhuGIS.ArcEngineTool.NetworkAnalysis
     /// </summary>
     static class NetWorkAnalysClass
     {
-        //工具类所使用数据库文件路径
-        public const string databasepath = "\\data\\WhuGIS_NetWorkAnalysis.gdb";
-
-
+        
         #region 工作空间和数据集字段
         /// <summary>
         /// 外部GDB数据库文件目录
@@ -70,20 +67,6 @@ namespace WhuGIS.ArcEngineTool.NetworkAnalysis
         #region 本类提供的网络数据集
 
         public static INetworkDataset NetWorkDataSet;
-
-//        private static INetworkDataset GetNetWorkDataSet
-//        {
-//            get
-//            {
-//                if (NetWorkDataSet == null)
-//                {
-//
-//                }
-//            }
-//        }
-
-
-        
 
         #endregion
 

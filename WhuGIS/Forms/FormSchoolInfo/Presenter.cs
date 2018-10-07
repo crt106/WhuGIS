@@ -67,12 +67,17 @@ namespace WhuGIS.Forms.FormSchoolInfo
             pFeaturelayer.Name = "ofo分布";
 
             //修饰该图层
-            ISimpleMarkerSymbol pMarkerSymbol = new SimpleMarkerSymbol();
-            pMarkerSymbol.Style = esriSimpleMarkerStyle.esriSMSCircle;
-            var pRgbColor = ColorUtils.GetRgbColor(255, 255, 0);
-            pMarkerSymbol.Color = pRgbColor;
+
+            IPictureMarkerSymbol ofoMarkerSymbol = new PictureMarkerSymbolClass();
+            ofoMarkerSymbol.Size = 18;
+            ofoMarkerSymbol.CreateMarkerSymbolFromFile(esriIPictureType.esriIPicturePNG, ApplicationV.Data_ImgPath + "//ofo.png");
+
+//            ISimpleMarkerSymbol pMarkerSymbol = new SimpleMarkerSymbol();
+//            pMarkerSymbol.Style = esriSimpleMarkerStyle.esriSMSCircle;
+//            var pRgbColor = ColorUtils.GetRgbColor(255, 255, 0);
+//            pMarkerSymbol.Color = pRgbColor;
             ISimpleRenderer pSimpleRenderer = new SimpleRendererClass();
-            pSimpleRenderer.Symbol = (ISymbol)pMarkerSymbol;
+            pSimpleRenderer.Symbol = (ISymbol)ofoMarkerSymbol;
             (pFeaturelayer as IGeoFeatureLayer).Renderer = pSimpleRenderer as IFeatureRenderer;
 
             //正式归为图层
@@ -124,12 +129,17 @@ namespace WhuGIS.Forms.FormSchoolInfo
             pFeaturelayer.Name = "mobike分布";
 
             //修饰该图层
-            ISimpleMarkerSymbol pMarkerSymbol = new SimpleMarkerSymbol();
-            pMarkerSymbol.Style = esriSimpleMarkerStyle.esriSMSCircle;
-            var pRgbColor = ColorUtils.GetRgbColor(226, 61, 14);
-            pMarkerSymbol.Color = pRgbColor;
+            IPictureMarkerSymbol mobikeMarkerSymbol=new PictureMarkerSymbolClass();
+            mobikeMarkerSymbol.Size = 18;
+            mobikeMarkerSymbol.CreateMarkerSymbolFromFile(esriIPictureType.esriIPicturePNG,ApplicationV.Data_ImgPath+"//mobike.png");
+
+//            ISimpleMarkerSymbol pMarkerSymbol = new SimpleMarkerSymbol();
+//            pMarkerSymbol.Style = esriSimpleMarkerStyle.esriSMSCircle;
+//            var pRgbColor = ColorUtils.GetRgbColor(226, 61, 14);
+//            pMarkerSymbol.Color = pRgbColor;
+
             ISimpleRenderer pSimpleRenderer = new SimpleRendererClass();
-            pSimpleRenderer.Symbol = (ISymbol)pMarkerSymbol;
+            pSimpleRenderer.Symbol = (ISymbol)mobikeMarkerSymbol;
             (pFeaturelayer as IGeoFeatureLayer).Renderer = pSimpleRenderer as IFeatureRenderer;
 
             //正式归为图层

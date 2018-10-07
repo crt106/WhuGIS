@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Threading.Tasks;
 using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.DataSourcesGDB;
@@ -157,36 +158,42 @@ namespace WhuGIS.Forms.FormMain
                 tmp.pGeometry = polygon as IGeometry;
             }
             tmp.Show(FormHolder.FormHolder.GetInstance.dockPanel1,DockState.DockRight);
+            tmp.DockPanel.DockRightPortion = 0.2;
         }
 
         public void CallOutFormAttr(IFeatureLayer layer)
         {
             var tmp = new FormAttr.FormAttr(layer);
             tmp.Show(FormHolder.FormHolder.GetInstance.dockPanel1, DockState.Float);
+            tmp.DockPanel.DefaultFloatWindowSize=new Size(800,200);
         }
 
         public void CallOutFormPathSolve()
         {
             var tmp = new FormPathSolve.FormPathSolve(MainView.Map);
             tmp.Show(FormHolder.FormHolder.GetInstance.dockPanel1, DockState.DockRight);
+            tmp.DockPanel.DockRightPortion = 0.2;
         }
 
         public void CallOutFormMonitor()
         {
             var tmp = new FormMonitor.FormMonitor(MainView.Map);
             tmp.Show(FormHolder.FormHolder.GetInstance.dockPanel1, DockState.DockRight);
+            tmp.DockPanel.DockRightPortion = 0.2;
         }
 
         public void CallOutFormSchoolInfo()
         {
             var tmp = new FormSchoolInfo.FormSchoolInfo();
             tmp.Show(FormHolder.FormHolder.GetInstance.dockPanel1, DockState.DockRight);
+            tmp.DockPanel.DockRightPortion = 0.2;
         }
 
         public void CallOutFormPhoto()
         {
             var tmp = new FormPhoto.FormPhoto(MainView.Map);
             tmp.Show(FormHolder.FormHolder.GetInstance.dockPanel1, DockState.DockRight);
+            tmp.DockPanel.DockRightPortion = 0.2;
         }
 
         #endregion

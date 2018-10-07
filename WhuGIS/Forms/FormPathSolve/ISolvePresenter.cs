@@ -8,7 +8,6 @@ namespace WhuGIS.Forms.FormPathSolve
         void SetNetWorkDataset_MDBFile();                       //从外部MDB文件获取网络数据集
         void SetNetWorkDataset_Shapfile();                      //从外部Shapfile文件获取网络数据集
         void SetNetWorkDataset_Layers();                        //从图层获取网络数据集
-
         void ClearPathResult();                                 //清除已有的最短路径计算结果
     }
 }

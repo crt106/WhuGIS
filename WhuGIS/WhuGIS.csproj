@@ -74,6 +74,9 @@
     <Reference Include="ESRI.ArcGIS.Geometry, Version=10.2.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
+    <Reference Include="ESRI.ArcGIS.Geoprocessing, Version=10.2.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
     <Reference Include="ESRI.ArcGIS.Geoprocessor, Version=10.2.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL" />
     <Reference Include="ESRI.ArcGIS.GlobeCore, Version=10.2.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86">
       <EmbedInteropTypes>False</EmbedInteropTypes>
@@ -285,6 +288,10 @@
     <Content Include="ArcEngineTool\NetworkAnalysis\AddNetStops\AddNetStopsTool.bmp" />
     <Content Include="ArcEngineTool\NetworkAnalysis\AddNetStops\AddNetStopsTool.cur" />
     <Content Include="ArcEngineTool\NetworkAnalysis\GetPathSolve\ShortPathSolveCommand.bmp" />
+    <None Include="Resources\ofo.png" />
+    <None Include="Resources\mobike.png" />
+    <None Include="bin\Debug\data\Img\stops.bmp" />
+    <None Include="bin\Debug\data\Img\barries.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\cef.redist.x86.3.2623.1401\build\cef.redist.x86.targets" Condition="Exists('..\packages\cef.redist.x86.3.2623.1401\build\cef.redist.x86.targets')" />

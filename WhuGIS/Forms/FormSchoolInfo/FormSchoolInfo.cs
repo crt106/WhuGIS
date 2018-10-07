@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Windows.Forms;
 using CefSharp.WinForms;
@@ -67,11 +68,11 @@ namespace WhuGIS.Forms.FormSchoolInfo
         {
             //加载浏览器
             Cwebview = new ChromiumWebBrowser(URL_GEIFEN);
-            panel_Geifen.Controls.Add(Cwebview);
+            panel_Geifen.Controls.Add(Cwebview);  
         }
 
         /// <summary>
-        /// 刷新ofo数据
+        /// 刷新共享单车数据
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -81,8 +82,5 @@ namespace WhuGIS.Forms.FormSchoolInfo
             presenter.RefreshmobikeInfo();
         }
 
-       
-
-        
     }
 }
