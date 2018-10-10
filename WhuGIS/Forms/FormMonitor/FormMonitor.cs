@@ -12,13 +12,17 @@ using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.Controls;
 using ESRI.ArcGIS.DataSourcesFile;
 using ESRI.ArcGIS.DataSourcesGDB;
+using ESRI.ArcGIS.DataSourcesRaster;
 using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geometry;
 using ESRI.ArcGIS.Geoprocessing;
 using ESRI.ArcGIS.Geoprocessor;
+using ESRI.ArcGIS.SpatialAnalystTools;
 using WeifenLuo.WinFormsUI.Docking;
-using Buffer = ESRI.ArcGIS.AnalysisTools.Buffer;
-using Union  = ESRI.ArcGIS.AnalysisTools.Union;
+using WhuGIS.Utils;
+using Visibility=ESRI.ArcGIS.SpatialAnalystTools.Visibility;
+using RasterCalculator=ESRI.ArcGIS.SpatialAnalystTools.RasterCalculator;
+using Con=ESRI.ArcGIS.SpatialAnalystTools.Con;
 
 namespace WhuGIS.Forms.FormMonitor
 {
@@ -30,47 +34,22 @@ namespace WhuGIS.Forms.FormMonitor
     {
         //总图层链表
         private List<ILayer> TotalLayers = new List<ILayer>();
-        //待加入裁剪要素的图层
-        private List<ILayer> List_Layers = new List<ILayer>();
-        //裁剪要素图层
-        private List<ILayer> List_Clips = new List<ILayer>();
+        private List<ILayer> RasterLayers=new List<ILayer>();
+        
  
         //与主地图控件的连接
         private AxMapControl mainMapControl;
 
         private double buffersize
         {
-            get { return (double) numericUpDown.Value; }
+            //这里就是个近似计算了
+            get { return ((double) numericUpDown.Value)/30.9/3600; }
             set { numericUpDown.Value = (decimal) value; }
         }                            //监控器缓冲区大小数值
-        private ILayer InputLayer;                              //输入图层
+        private ILayer CameraLayer;                              //输入监控位置图层
+        private ILayer BuildingLayer;                            //输入建筑栅格图层
 
-        private IFeatureClass pInputFeatureClass                //输入要素类
-        {
-            get
-            {
-                //获取输入要素类进行缓冲之后的要素类
-                //缓冲区分析-GP工具调用
-                Geoprocessor gp = new Geoprocessor();
-                gp.OverwriteOutput = true;
-                Buffer pBuffer = new Buffer();
-                //获取缓冲区分析图层
-                IFeatureLayer featLayer = InputLayer as IFeatureLayer;
-                pBuffer.in_features = featLayer;
-                //设置生成结果存储路径
-                string filename = InputLayer.Name + "_Buffer";
-                pBuffer.out_feature_class = ApplicationV.Data_MonitorPath + "\\" + filename + ".shp";
-                //设置缓冲区距离
-                pBuffer.buffer_distance_or_field = string.Format("{0} Meters", buffersize.ToString("f2"));
-                pBuffer.dissolve_option = "ALL";
-                //执行缓冲区分析
-                gp.Execute(pBuffer, null);
-                //添加到地图中
-                mainMapControl.AddShapeFile(ApplicationV.Data_MonitorPath, filename);
-                //获取该图层
-                return (mainMapControl.get_Layer(0) as IFeatureLayer).FeatureClass;
-            }
-        }               
+                 
         
         public FormMonitor(AxMapControl a)
         {
@@ -80,6 +59,7 @@ namespace WhuGIS.Forms.FormMonitor
             try
             {
                 comboBox_list.SelectedIndex = 0;
+                comboBox_building.SelectedIndex = 0;
             }
             catch (Exception e)
             {
@@ -94,8 +74,12 @@ namespace WhuGIS.Forms.FormMonitor
         {
             for (int i = 0; i < mainMapControl.LayerCount; i++)
             {
-                List_Layers.Add(mainMapControl.get_Layer(i));
-                TotalLayers.Add(mainMapControl.get_Layer(i));
+                var thislayer = mainMapControl.get_Layer(i);
+                TotalLayers.Add(thislayer);
+                if (thislayer is IRasterLayer)
+                {
+                    RasterLayers.Add(thislayer);
+                }
             }
             RefreshData();
         }
@@ -107,13 +91,9 @@ namespace WhuGIS.Forms.FormMonitor
             comboBox_list.DisplayMember = "Name";
             comboBox_list.DataSource = TotalLayers;
 
-            ListBox_Layers.DataSource = null;
-            ListBox_Layers.DataSource = List_Layers;
-            ListBox_Layers.DisplayMember = "Name";
-
-            ListBox_Clips.DataSource = null;
-            ListBox_Clips.DisplayMember = "Name";
-            ListBox_Clips.DataSource = List_Clips;
+            comboBox_building.DataSource = null;
+            comboBox_building.DisplayMember = "Name";
+            comboBox_building.DataSource = RasterLayers;
         }
 
        
@@ -121,181 +101,107 @@ namespace WhuGIS.Forms.FormMonitor
 
         #region 按钮事件
 
-        //添加裁剪要素
-        private void buttonAdd2_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                //如果选中了对象哦
-                if (ListBox_Layers.GetSelected(ListBox_Layers.SelectedIndex))
-                {
-                    var layer = List_Layers[ListBox_Layers.SelectedIndex];
-                    List_Layers.Remove(layer);
-                    List_Clips.Add(layer);
-
-                    //刷新绑定
-                    RefreshData();
-                }
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(exception);
-            }
-        }
-
-        //删除裁剪要素
-        private void buttonDelete2_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                //如果选中了对象哦
-                if (ListBox_Clips.GetSelected(ListBox_Clips.SelectedIndex))
-                {
-                    var layer = List_Clips[ListBox_Clips.SelectedIndex];
-                    List_Clips.Remove(layer);
-                    List_Layers.Add(layer);
-                    //刷新绑定
-                    RefreshData();
-                }
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(exception);
-            }
-        }
 
         //开始处理
         private void buttonOK_Click(object sender, EventArgs e)
-        {     
-            Clip();
-//            if (outFeatureClass != null)
-//            {
-//                //将结果FeatureClass数据集转为FeatureLayer
-//                IFeatureLayer pFeatueLayer = new FeatureLayerClass();
-//                pFeatueLayer.FeatureClass = outFeatureClass;
-//                pFeatueLayer.Name = outFeatureClass.AliasName;
-//                //将结果数据加载到地图中，并刷新地图控件
-//                mainMapControl.AddLayer(pFeatueLayer);
-//                mainMapControl.Refresh();
-//                //清除数据
-//                //DelectDir();
-//            }
+        {
+            ViewAnalyze();
         }
 
         /// <summary>
-        /// 当Combobox改变时刷新所选图层
+        /// 当Combobox改变时刷新所选摄像头点位图层
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void comboBox_list_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboBox_list.SelectedIndex >= 0 && comboBox_list.SelectedIndex < TotalLayers.Count) 
-            InputLayer = TotalLayers[comboBox_list.SelectedIndex];
+            CameraLayer = TotalLayers[comboBox_list.SelectedIndex];
+        }
+
+        /// <summary>
+        /// 当ComboBoxBuilding改变时
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void comboBox_building_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBox_building.SelectedIndex >= 0 && comboBox_building.SelectedIndex < RasterLayers.Count)
+                BuildingLayer = RasterLayers[comboBox_list.SelectedIndex];
         }
         #endregion
 
-
         /// <summary>
-        /// Clip裁剪分析 [这里是先并集再裁剪]  ///突然出错 换用GP工具
+        /// 最终版-------视域分析------
         /// </summary>
         /// <returns></returns>
-        public IFeatureClass Clip()
+        public void ViewAnalyze()
         {
-//            //初始化IBasicGeoprocessor对象，调用Clip方法
-//            IBasicGeoprocessor pBasicGeo = new BasicGeoprocessorClass();
-//            pBasicGeo.SpatialReference = mainMapControl.SpatialReference;
-//            
-//            //设置输出结果IFeatureClassName相关必备属性
-//            IFeatureClassName pOutPut = new FeatureClassNameClass();
-//            pOutPut.ShapeType = pInputFeatureClass.ShapeType;
-//            pOutPut.ShapeFieldName = pInputFeatureClass.ShapeFieldName;
-//            pOutPut.FeatureType = esriFeatureType.esriFTSimple;
-//
-//            //获取shapeFile数据工作空间
-//            IWorkspaceName pWsN = new WorkspaceNameClass();
-//            pWsN.WorkspaceFactoryProgID = "esriDataSourcesFile.ShapefileWorkspaceFactory";
-//            pWsN.PathName = ApplicationV.Data_MonitorPath;
-//
-//            //通过IDatasetName设置输出结果相关参数
-//            IDatasetName pDatasetName = pOutPut as IDatasetName;
-//            pDatasetName.Name = "裁剪分析结果";
-//            pDatasetName.WorkspaceName = pWsN;
-
-//            //先进行并集运算
-            var UnionTable = InnerUnion();
-//            IFeatureClass pFeatureClass = pBasicGeo.Clip(UnionTable, false, pInputFeatureClass as ITable, false, 0.01, pOutPut);
-            
-            ///今天10-7突然这个方法报错了 换用GP工具
-            var filename = ApplicationV.Data_MonitorPath + "\\裁剪分析结果";
             Geoprocessor g = new Geoprocessor();    //实例化一个GP对象
             g.OverwriteOutput = true;
-            
-            ESRI.ArcGIS.AnalysisTools.Clip clip = new ESRI.ArcGIS.AnalysisTools.Clip(pInputFeatureClass, UnionTable, filename);  //创建clip裁剪工具
-
-            g.Execute(clip, null);
-            //添加到地图中
-            mainMapControl.AddShapeFile(ApplicationV.Data_MonitorPath, "裁剪分析结果");
-            //获取该图层
-            return (mainMapControl.get_Layer(0) as IFeatureLayer).FeatureClass;
-        }
-
-        /// <summary>
-        /// 下个方法用的队列组件
-        /// </summary>
-        
-        /// <summary>
-        /// 上一个方法的Union组件
-        /// </summary>
-        /// <returns></returns>
-        public IFeatureClass InnerUnion()
-        {
-            //如果只有一个待并集对象 直接返回
-            if (List_Clips.Count <= 1)
+            try
             {
-                return (List_Clips[0] as IFeatureLayer).FeatureClass;
+                var filename1 = ApplicationV.Data_MonitorPath + "\\va_original";
+                Visibility v = new Visibility();
+                v.in_raster = (BuildingLayer as IRasterLayer).Raster;
+                v.in_observer_features = (CameraLayer as IFeatureLayer).FeatureClass;
+                v.out_raster = filename1;
+                //创建Visibility分析工具
+                v.z_factor = 1;
+                v.outer_radius = buffersize.ToString();
+                g.Execute(v, null);
+                object sev="";
+                Console.WriteLine(g.GetMessages(ref sev));
+            }
+            catch (Exception e)
+            {
+                object sev = "";
+                MessageBox.Show(g.GetMessages(ref sev));
+                return;
             }
 
-            //对多个要素类进行合并运算
-            IGpValueTableObject gpValueTableObject = new GpValueTableObjectClass();
-            gpValueTableObject.SetColumns(List_Clips.Count);
-            for (int i = 0; i < List_Clips.Count; i++)
+
+            //添加第一步处理后的数据 这里还要进行【条件函数】
+
+            //新建工作空间
+            IWorkspaceFactory workspaceFactory = new RasterWorkspaceFactoryClass();
+
+            IWorkspace workspace = workspaceFactory.OpenFromFile(ApplicationV.Data_MonitorPath, 0);
+            IRasterWorkspace rasterWorkspace = (IRasterWorkspace)workspace;
+            IRasterDataset firstDataset = rasterWorkspace.OpenRasterDataset("va_original");
+            IRaster firstraster = firstDataset.CreateDefaultRaster();
+            var pRasterLayer = new RasterLayerClass();
+            pRasterLayer.CreateFromRaster(firstraster);
+            ILayer pLayer = pRasterLayer as ILayer;
+            pLayer.Visible = false;
+            mainMapControl.AddLayer(pLayer,mainMapControl.LayerCount-1);
+
+
+            try
             {
-                object o = (List_Clips[i] as IFeatureLayer).FeatureClass;
-                gpValueTableObject.AddRow(ref o);
+                var filename2 = ApplicationV.Data_MonitorPath + "\\va_result";
+                var con = new Con();
+                con.in_conditional_raster = firstraster;
+                con.where_clause = "value=0";
+                con.in_true_raster_or_constant = 0;
+                con.in_false_raster_or_constant = 120;
+                con.out_raster = filename2;
+                g.Execute(con, null);
+            }
+            catch (Exception e)
+            {
+                object sev = "";
+                MessageBox.Show(g.GetMessages(ref sev));
+                return;
             }
 
-//            //初始化IBasicGeoprocessor对象，调用Clip方法
-//            IBasicGeoprocessor pBasicGeo = new BasicGeoprocessorClass();
-//            pBasicGeo.SpatialReference = mainMapControl.SpatialReference;
-//
-//            //设置输出结果IFeatureClassName相关必备属性
-//            IFeatureClassName pOutPut = new FeatureClassNameClass();
-//            pOutPut.ShapeType = pInputFeatureClass.ShapeType;
-//            pOutPut.ShapeFieldName = pInputFeatureClass.ShapeFieldName;
-//            pOutPut.FeatureType = esriFeatureType.esriFTSimple;
-//
-//            //获取shapeFile数据工作空间
-//            IWorkspaceName pWsN = new WorkspaceNameClass();
-//            pWsN.WorkspaceFactoryProgID = "esriDataSourcesFile.ShapefileWorkspaceFactory";
-//            pWsN.PathName = ApplicationV.Data_MonitorPath;
-//
-//            //通过IDatasetName设置输出结果相关参数
-//            IDatasetName pDatasetName = pOutPut as IDatasetName;
-//            pDatasetName.Name = "合并分析结果";
-//            pDatasetName.WorkspaceName = pWsN;
-
-
-            var filename = ApplicationV.Data_MonitorPath + "\\合并分析结果";
-            Geoprocessor g = new Geoprocessor(); //实例化一个GP对象
-            g.OverwriteOutput = true;
-
-            Union clip = new Union(gpValueTableObject, filename); //创建clip裁剪工具
-            g.Execute(clip, null);
-
-            var workspaceFactory = new ShapefileWorkspaceFactory();
-            var workspace = workspaceFactory.OpenFromFile(ApplicationV.Data_MonitorPath, 0);
-            var result = (workspace as IFeatureWorkspace).OpenFeatureClass("合并分析结果");
-            return result;
+            //最终导入图层
+            IRasterDataset SecondDataset = rasterWorkspace.OpenRasterDataset("va_result");
+            IRaster secondraster = SecondDataset.CreateDefaultRaster();
+            var ppRasterLayer = new RasterLayerClass();
+            ppRasterLayer.CreateFromRaster(secondraster);
+            ILayer ppLayer = ppRasterLayer as ILayer;
+            mainMapControl.AddLayer(ppLayer, MapUtils.GetLayerIndex("建筑")+1);
         }
 
         /// <summary>
@@ -325,6 +231,8 @@ namespace WhuGIS.Forms.FormMonitor
                 Console.WriteLine(e.Message);
             }
         }
+
+        
         
     }
 }

@@ -74,6 +74,7 @@
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.ContentPanel = new System.Windows.Forms.ToolStripContentPanel();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
+            this.教室查询toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
             ((System.ComponentModel.ISupportInitialize)(splitContainer1)).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -385,6 +386,7 @@
             // 
             this.信息查询ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.摄像头ToolStripMenuItem,
+            this.教室查询toolStripMenuItem,
             this.特征地物图像查询ToolStripMenuItem,
             this.校园信息查询ToolStripMenuItem});
             this.信息查询ToolStripMenuItem.Name = "信息查询ToolStripMenuItem";
@@ -480,6 +482,13 @@
             // 
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.MainMenu);
             // 
+            // 教室查询toolStripMenuItem
+            // 
+            this.教室查询toolStripMenuItem.Name = "教室查询toolStripMenuItem";
+            this.教室查询toolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.教室查询toolStripMenuItem.Text = "教室查询...";
+            this.教室查询toolStripMenuItem.Click += new System.EventHandler(this.教室查询toolStripMenuItem_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -563,6 +572,7 @@
         private ESRI.ArcGIS.Controls.AxLicenseControl axLicenseControl;
         private ESRI.ArcGIS.Controls.AxMapControl axMapControl;
         private System.Windows.Forms.ToolStripContainer toolStripContainer1;
+        private System.Windows.Forms.ToolStripMenuItem 教室查询toolStripMenuItem;
 
     }
 }

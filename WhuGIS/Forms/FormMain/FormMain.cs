@@ -445,7 +445,7 @@ namespace WhuGIS.Forms.FormMain
         private void axMapControl_OnMouseMove(object sender, IMapControlEvents2_OnMouseMoveEvent e)
         {
             sMapUnits = Utils.MapUtils.GetMapUnit(axMapControl.Map.MapUnits);
-            StatusBarInfoSet(String.Format("当前坐标：X = {0:#.###} Y = {1:#.###} {2}", e.mapX, e.mapY, sMapUnits));
+            StatusBarInfoSet(String.Format("当前坐标：X = {0:#.######} Y = {1:#.######} {2}", e.mapX, e.mapY, sMapUnits));
             pMovePt = (axMapControl.Map as IActiveView).ScreenDisplay.DisplayTransformation.ToMapPoint(e.x, e.y);
 
             if (!ApplicationV.IsBanFormMainMapClick)
@@ -469,8 +469,8 @@ namespace WhuGIS.Forms.FormMain
                         if (frmMeasureResult != null)
                         {
                             frmMeasureResult.lblMeasureResult.Text = String.Format(
-                                "当前线段长度：{0:.###}{1};\r\n总长度为: {2:.###}{1}",
-                                dSegmentLength, sMapUnits, dToltalLength);
+                                "当前线段长度:{0} ({1});\r\n总长度为:{2} ({1})",
+                                dSegmentLength.ToString("f6"), sMapUnits, dToltalLength.ToString("f6"));
                             dToltalLength = dToltalLength - dSegmentLength; //鼠标移动到新点重新开始计算
                         }
                         frmMeasureResult.frmClosed += new FormMeasureResult.FormMeasureResult.FormClosedEventHandler(frmMeasureResult_frmColsed);
@@ -511,8 +511,8 @@ namespace WhuGIS.Forms.FormMain
                         IArea pArea = pGeo as IArea;
 
                         frmMeasureResult.lblMeasureResult.Text = String.Format(
-                            "总面积为：{0:.####}平方{1};\r\n总长度为：{2:.####}{1}",
-                            pArea.Area, sMapUnits, pPolygon.Length);
+                            "总面积为:{0} (平方{1});\r\n总长度为:{2} ({1})",
+                            pArea.Area.ToString("F7"), sMapUnits, pPolygon.Length.ToString("F7"));
                         pPolygon = null;
                     }
                 }
@@ -873,6 +873,11 @@ namespace WhuGIS.Forms.FormMain
         {
             presenter.CallOutFormSchoolInfo();
         }
+
+        private void 教室查询toolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            presenter.CallOutFormClassroomQuery();
+        }
         #endregion
 
 
@@ -976,6 +981,7 @@ namespace WhuGIS.Forms.FormMain
             presenter.LoadMxdFile(ApplicationV.SampleMXD);
         }
 
+        
 
     }
 }

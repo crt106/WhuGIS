@@ -29,16 +29,18 @@
         private void InitializeComponent()
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage_Chair = new System.Windows.Forms.TabPage();
             this.tabPage_bike = new System.Windows.Forms.TabPage();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.buttonRefresh = new System.Windows.Forms.Button();
             this.tabPage_Geifen = new System.Windows.Forms.TabPage();
             this.panel_Geifen = new System.Windows.Forms.Panel();
+            this.tabPage_Hall = new System.Windows.Forms.TabPage();
+            this.panel_Hall = new System.Windows.Forms.Panel();
             this.tabControl1.SuspendLayout();
             this.tabPage_bike.SuspendLayout();
             this.tabPage_Geifen.SuspendLayout();
+            this.tabPage_Hall.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -46,7 +48,7 @@
             this.tabControl1.Alignment = System.Windows.Forms.TabAlignment.Bottom;
             this.tabControl1.Controls.Add(this.tabPage_bike);
             this.tabControl1.Controls.Add(this.tabPage_Geifen);
-            this.tabControl1.Controls.Add(this.tabPage_Chair);
+            this.tabControl1.Controls.Add(this.tabPage_Hall);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Multiline = true;
@@ -55,16 +57,6 @@
             this.tabControl1.Size = new System.Drawing.Size(343, 632);
             this.tabControl1.TabIndex = 0;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
-            // 
-            // tabPage_Chair
-            // 
-            this.tabPage_Chair.Location = new System.Drawing.Point(4, 4);
-            this.tabPage_Chair.Name = "tabPage_Chair";
-            this.tabPage_Chair.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_Chair.Size = new System.Drawing.Size(335, 606);
-            this.tabPage_Chair.TabIndex = 1;
-            this.tabPage_Chair.Text = "教室信息";
-            this.tabPage_Chair.UseVisualStyleBackColor = true;
             // 
             // tabPage_bike
             // 
@@ -127,6 +119,7 @@
             this.tabPage_Geifen.TabIndex = 2;
             this.tabPage_Geifen.Text = "给分查询";
             this.tabPage_Geifen.UseVisualStyleBackColor = true;
+            this.tabPage_Geifen.Enter += new System.EventHandler(this.tabPage_Geifen_Enter);
             // 
             // panel_Geifen
             // 
@@ -135,6 +128,25 @@
             this.panel_Geifen.Name = "panel_Geifen";
             this.panel_Geifen.Size = new System.Drawing.Size(335, 606);
             this.panel_Geifen.TabIndex = 0;
+            // 
+            // tabPage_Hall
+            // 
+            this.tabPage_Hall.Controls.Add(this.panel_Hall);
+            this.tabPage_Hall.Location = new System.Drawing.Point(4, 4);
+            this.tabPage_Hall.Name = "tabPage_Hall";
+            this.tabPage_Hall.Size = new System.Drawing.Size(335, 606);
+            this.tabPage_Hall.TabIndex = 3;
+            this.tabPage_Hall.Text = "场地占用查询";
+            this.tabPage_Hall.UseVisualStyleBackColor = true;
+            this.tabPage_Hall.Enter += new System.EventHandler(this.tabPage_Hall_Enter);
+            // 
+            // panel_Hall
+            // 
+            this.panel_Hall.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel_Hall.Location = new System.Drawing.Point(0, 0);
+            this.panel_Hall.Name = "panel_Hall";
+            this.panel_Hall.Size = new System.Drawing.Size(335, 606);
+            this.panel_Hall.TabIndex = 0;
             // 
             // FormSchoolInfo
             // 
@@ -156,6 +168,7 @@
             this.tabPage_bike.ResumeLayout(false);
             this.tabPage_bike.PerformLayout();
             this.tabPage_Geifen.ResumeLayout(false);
+            this.tabPage_Hall.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -164,11 +177,12 @@
 
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage_bike;
-        private System.Windows.Forms.TabPage tabPage_Chair;
         private System.Windows.Forms.TabPage tabPage_Geifen;
         private System.Windows.Forms.Panel panel_Geifen;
         private System.Windows.Forms.Button buttonRefresh;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TabPage tabPage_Hall;
+        private System.Windows.Forms.Panel panel_Hall;
     }
 }

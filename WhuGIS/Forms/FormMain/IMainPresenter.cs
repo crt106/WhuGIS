@@ -22,5 +22,6 @@ namespace WhuGIS.Forms.FormMain
         void CallOutFormMonitor();                                //呼出监控范围分析窗口
         void CallOutFormSchoolInfo();                             //呼出校园公共消息窗口
         void CallOutFormPhoto();                                  //呼出图像查询窗口
+        void CallOutFormClassroomQuery();                         //呼出教室查询窗口
     } 
 }

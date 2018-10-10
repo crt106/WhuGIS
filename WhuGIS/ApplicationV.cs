@@ -17,24 +17,24 @@ namespace WhuGIS
         //数据根目录
         public static string DatarootPath
         {
-            get { return System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + "\\data"; }
+            get { return System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + "data"; }
         }
 
         //最短路径分析图片位置
         public static string Data_ImgPath
         {
-            get { return System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + "\\data\\Img"; }
+            get { return System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + "data\\Img"; }
         }
 
         //摄像头分析缓存
         public static string Data_MonitorPath
         {
-            get { return System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + "\\data\\Monitor"; }
+            get { return System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + "data\\Monitor"; }
         }
 
 
         public static string SampleMXD =
-            AppDomain.CurrentDomain.SetupInformation.ApplicationBase + "\\data\\地图数据\\初步完整版.mxd";
+            AppDomain.CurrentDomain.SetupInformation.ApplicationBase + "data\\地图数据\\初步完整版.mxd";
 
         static ApplicationV()
         {

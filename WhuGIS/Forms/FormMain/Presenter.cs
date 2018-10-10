@@ -196,6 +196,11 @@ namespace WhuGIS.Forms.FormMain
             tmp.DockPanel.DockRightPortion = 0.2;
         }
 
+        public void CallOutFormClassroomQuery()
+        {
+            var tmp = new FormClassroomQuery.FormClassroomQuery();
+            tmp.Show(FormHolder.FormHolder.GetInstance.dockPanel1, DockState.Document);
+        }
         #endregion
         
     }

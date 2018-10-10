@@ -400,5 +400,21 @@ namespace WhuGIS.Utils
             }
             return pElem;
         }
+
+        /// <summary>
+        /// 获取指定名称图层的图层次序
+        /// </summary>
+        /// <param name="layername"></param>
+        /// <returns></returns>
+        public static int GetLayerIndex(string layername)
+        {
+            for (int i = 0; i < ApplicationV.GlobalMapControl.LayerCount; i++)
+            {
+                var thislayer = ApplicationV.GlobalMapControl.get_Layer(i);
+                if (thislayer.Name == layername)
+                    return i;
+            }
+            return 0;
+        }
     }
 }

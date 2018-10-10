@@ -55,6 +55,7 @@
             this.AutoHidePortion = 220D;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(292, 68);
             this.Controls.Add(this.lblMeasureResult);
             this.Controls.Add(this.lblResult);
@@ -66,7 +67,7 @@
             this.MinimizeBox = false;
             this.Name = "FormMeasureResult";
             this.ShowIcon = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "测量结果";
             this.TopMost = true;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormMeasureResult_FormClosed);

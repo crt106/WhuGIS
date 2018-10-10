@@ -16,6 +16,7 @@ namespace WhuGIS.Forms.FormSchoolInfo
     {
         public ISchoolPresenter presenter;
         public const string URL_GEIFEN = "120.79.7.230/whuseats_web/geifen.html";
+        public const string URL_HALL = "http://hall.future.org.cn/main.php";
         public FormSchoolInfo()
         {
             InitializeComponent();
@@ -80,6 +81,28 @@ namespace WhuGIS.Forms.FormSchoolInfo
         {
             presenter.RefreshofoInfo();
             presenter.RefreshmobikeInfo();
+        }
+
+        /// <summary>
+        /// 场地查询页面进入事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void tabPage_Hall_Enter(object sender, EventArgs e)
+        {
+            Cwebview =new ChromiumWebBrowser(URL_HALL);
+            panel_Hall.Controls.Add(Cwebview);
+        }
+
+        /// <summary>
+        /// 给分页面进入
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void tabPage_Geifen_Enter(object sender, EventArgs e)
+        {
+            Cwebview = new ChromiumWebBrowser(URL_GEIFEN);
+            panel_Geifen.Controls.Add(Cwebview);
         }
 
     }
